@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Peer from 'peerjs'
+// import Peer from 'peerjs'
 
 class PeersExample extends Component {
 
