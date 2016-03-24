@@ -1,4 +1,8 @@
 # remote-desktop
-## todo list
+## Naming
+* host - устройство к которому осуществляется доступ
+* client - устройство с которого производится доступ к хосту
+* server - соединяет клиент и хост 
 
-[![Join the chat at https://gitter.im/pinepie/remote-desktop](https://badges.gitter.im/pinepie/remote-desktop.svg)](https://gitter.im/pinepie/remote-desktop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
