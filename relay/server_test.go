@@ -27,10 +27,10 @@ func TestInitAction(t *testing.T) {
 	sender, _ := net.ResolveUDPAddr("udp4", expectedAddr)
 	initAction(request, sender, sock)
 	if userAddr, ok := clients[request.User]; !ok {
-		t.Error("User ", userName, "has not added to clients")
+		t.Error("User ", userName, "hasn't added to clients")
 	} else {
 		if userAddr != expectedAddr {
-			t.Error("User ", userName, "has wrong addres clients map",
+			t.Error("User ", userName, "has wrong address in clients map",
 				"\nExpected: ", expectedAddr,
 				"\nGot: ", userAddr)
 		}
