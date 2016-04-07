@@ -14,6 +14,7 @@ class SocketManager extends Component {
 	getHosts() {
 		return this.state.hosts.map((i) => <div className="host">i.name</div>)
 	}
+
 	render() {
 		return (
 			<div>
