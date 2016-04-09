@@ -20,6 +20,7 @@ func initDb() bool {
 		log.Println("initDb: ", err)
 		return false
 	}
+
 	db, err := getValidDb(dbSession)
 	rodeodb = db
 	return true
