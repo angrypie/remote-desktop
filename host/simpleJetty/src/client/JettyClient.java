@@ -24,8 +24,7 @@ public class JettyClient{
 					
 					for(int i=0;i<100000;i++){
 						BufferedImage buf= new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())) ;
-						conn.sendObject(new Message(buf,"hello json!"));
-						//Thread.sleep(50);
+						conn.sendObject(new Message("IMG_FRAME",buf));
 					}
 					// Close session
 					session.close();

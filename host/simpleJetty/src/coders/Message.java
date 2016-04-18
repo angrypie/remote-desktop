@@ -1,33 +1,32 @@
 package coders;
 
-import java.awt.image.BufferedImage;
 
 public class Message {
-	private String message;
-	private BufferedImage icon;
+	private String action;
+	private Object data;
 	
 	public Message() {
 	}
 	
-	public Message( final BufferedImage icon, final String message ) {
-		this.icon = icon;
-		this.message = message;
+	public Message(final String action,final Object data) {
+		this.action = action;
+		this.data = data;
 	}
 	
-	public String getMessage() {
-		return message;
+	public String getAction() {
+		return action;
 	}
 	
-	public BufferedImage getIcon() {
-		return icon;
+	public Object getData() {
+		return data;
 	}
 
-	public void setMessage( final String message ) {
-		this.message = message;
+	public void setAction( final String action ) {
+		this.action = action;
 	}
 	
-	public void setIcon( final BufferedImage icon) {
-		this.icon = icon;
+	public void setData( final Object data) {
+		this.data = data;
 	}
 
 }

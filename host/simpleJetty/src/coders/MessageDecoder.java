@@ -26,24 +26,30 @@ public class MessageDecoder implements Decoder.Text< Message > {
 	@Override
 	public Message decode( final String str ) throws DecodeException {
 		final Message message = new Message();
-
 		try( final JsonReader reader = factory.createReader( new StringReader( str ) ) ) {
 			final JsonObject json = reader.readObject();
-			String imageString=json.getString("icon");
-			BufferedImage bImage = null;
-	        try {
-	            byte[] output = Base64.getDecoder().decode(imageString);
-	            ByteArrayInputStream bais = new ByteArrayInputStream(output);
-	            bImage = ImageIO.read(bais);
-	        } catch (IOException ex) {
-	        
-	        }
-	        System.out.println(bImage);
-			message.setIcon(bImage);
-			message.setMessage( json.getString( "message" ) );
+			Object data=null;
+			String action=json.getString("action");
+			message.setAction(action);
+			if(action.compareTo("IMG_FRAME")==0){
+				data=decodeImage(json);
+			}
+			message.setData(data);
 		}
 
 		return message;
+	}
+
+	private Object decodeImage(JsonObject json){
+		String imageString=json.getString("data");
+		BufferedImage bImage = null;
+		try {
+			byte[] output = Base64.getDecoder().decode(imageString);
+			ByteArrayInputStream bais = new ByteArrayInputStream(output);
+			bImage = ImageIO.read(bais);
+		} catch (IOException ex) {
+		}
+		return bImage;
 	}
 
 	@Override
