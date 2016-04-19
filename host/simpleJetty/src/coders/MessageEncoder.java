@@ -21,9 +21,25 @@ public class MessageEncoder implements Encoder.Text< Message > {
 		String encodeMessage = null;
 		if(message.getAction()=="IMG_FRAME"){
 			encodeMessage=encodeImage(message);
+		}else if(message.getAction()=="MOUSE_MOVE"){
+			encodeMessage=encodeMoveMouse(message);
+		}else if(message.getAction()=="MOUSE_RCLICK" || message.getAction()=="MOUSE_LCLICK"){
+			encodeMessage=encodeMouseClick(message);
 		}
 		return encodeMessage;
-
+	}
+	
+	private String encodeMouseClick(Message message){
+		return Json.createObjectBuilder()
+				.add( "action", message.getAction() )
+				.build().toString();
+	}
+	
+	private String encodeMoveMouse(Message message){
+		return Json.createObjectBuilder()
+				.add("data", (String)message.getData())
+				.add( "action", message.getAction() )
+				.build().toString();
 	}
 
 	private String encodeImage(Message message){

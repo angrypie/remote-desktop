@@ -33,7 +33,8 @@ public class MessageDecoder implements Decoder.Text< Message > {
 			message.setAction(action);
 			if(action.compareTo("IMG_FRAME")==0){
 				data=decodeImage(json);
-			}
+			}else if(action.compareTo("MOUSE_MOVE")==0) data=json.getString("data");
+			else if(action.compareTo("MOUSE_RCLICK")==0 || action.compareTo("MOUSE_LCLICK")==0)data=null;
 			message.setData(data);
 		}
 

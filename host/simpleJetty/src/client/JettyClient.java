@@ -22,9 +22,13 @@ public class JettyClient{
 					Session session = container.connectToServer(EventSocketClient.class,uri);
 					Basic conn=session.getBasicRemote();
 					
-					for(int i=0;i<100000;i++){
+					for(int i=0;i<10;i++){
 						BufferedImage buf= new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())) ;
 						conn.sendObject(new Message("IMG_FRAME",buf));
+						conn.sendObject(new Message("MOUSE_MOVE","500,750"));
+						Thread.sleep(500);
+						conn.sendObject(new Message("MOUSE_RCLICK",null));
+						Thread.sleep(1000);
 					}
 					// Close session
 					session.close();
