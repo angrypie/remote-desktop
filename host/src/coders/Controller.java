@@ -1,5 +1,4 @@
-package server;
-
+package coders;
 
 import java.awt.AWTException;
 import java.awt.Graphics2D;
@@ -8,47 +7,38 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 
+import javax.json.JsonObject;
 import javax.swing.ImageIcon;
-import javax.websocket.CloseReason;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-import coders.*;
+import coders.Message;
 import simpleUI.UIimageTest;
 
-@ServerEndpoint(value = "/events/", encoders = { MessageEncoder.class }, decoders = { MessageDecoder.class } )
-public class EventSocketServer
-{
-	UIimageTest frame=new UIimageTest();
+public class Controller {
+	UIimageTest frame;
 	Robot robot;
-	@OnOpen
-	public void onWebSocketConnect(Session sess)
-	{
-		sess.setMaxTextMessageBufferSize(1000*2048);
-		System.out.println("Socket Connected: " + sess);
-		if(robot==null)
-			try {
-				robot=new Robot();
-			} catch (AWTException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	MessageDecoder dec;
+	
+	public Controller() {
+		super();
+	}
+	
+	public void startController(){
+		try {
+			this.robot = new Robot();
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+		dec=new MessageDecoder();
 	}
 
-	@OnMessage
-	public void onWebSocketText(Message message)
-	{
+	public void newMessage(Message message){
 		if(message.getAction().compareTo("IMG_FRAME")==0)getFrame(message);
 		else if(message.getAction().compareTo("MOUSE_MOVE")==0)mouseMove(message);
 		else if(message.getAction().compareTo("MOUSE_LCLICK")==0)mouseClick(1);
 		else if(message.getAction().compareTo("MOUSE_RCLICK")==0)mouseClick(3);
 	}
-
+	
 	private void getFrame(Message message){
-		System.out.println("Server Received frame: " + message.getAction());
+		if(frame==null)frame = new UIimageTest();
 		BufferedImage img=new BufferedImage(frame.getLblNewLabel().getWidth(), frame.getLblNewLabel().getHeight(), BufferedImage.TRANSLUCENT);
 		Graphics2D g2 = img.createGraphics();
 		if(message.getData()==null)System.out.println("get NULL data!");
@@ -61,9 +51,14 @@ public class EventSocketServer
 	}
 
 	private void mouseMove(Message message){
-		String point[]=message.getData().toString().split(",");
-		int x=Integer.valueOf(point[0]);
-		int y=Integer.valueOf(point[1]);
+		//String point[]=message.getData().toString().split(",");
+		
+		//int x=Integer.valueOf(point[0]);
+
+		//int y=Integer.valueOf(point[1]);
+		JsonObject json=dec.getJson((String)message.getData());
+		int x=Integer.valueOf(json.getString("x"));
+		int y=Integer.valueOf(json.getString("y"));
 		robot.mouseMove(x, y);
 	}
 
@@ -75,17 +70,5 @@ public class EventSocketServer
 			robot.mousePress(InputEvent.BUTTON3_MASK);
 			robot.mouseRelease(InputEvent.BUTTON3_MASK);
 		}
-	}
-
-	@OnClose
-	public void onWebSocketClose(CloseReason reason)
-	{
-		System.out.println("Socket Closed: " + reason);
-	}
-
-	@OnError
-	public void onWebSocketError(Throwable cause)
-	{
-		cause.printStackTrace(System.err);
 	}
 }
