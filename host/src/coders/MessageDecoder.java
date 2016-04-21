@@ -22,13 +22,9 @@ public class MessageDecoder implements Decoder.Text< Message > {
 	public Message decode( final String str ) throws DecodeException {
 		final Message message = new Message();
 		JsonObject json=getJson(str);
-		Object data=null;
 		String action=json.getString("action");
 		message.setAction(action);
-		if(action.compareTo("IMG_FRAME")==0)data=dec.decodeImage(json);
-		else if(action.compareTo("MOUSE_MOVE")==0) data=dec.decodeMouseMove(json);
-		else if(action.compareTo("MOUSE_RCLICK")==0 || action.compareTo("MOUSE_LCLICK")==0)data=dec.decodeMouseClick(json);
-		message.setData(data);
+		message.setData(dec.getData(json,action));
 
 		return message;
 	}

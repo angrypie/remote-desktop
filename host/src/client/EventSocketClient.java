@@ -11,7 +11,6 @@ import coders.Controller;
 import coders.Message;
 import coders.MessageDecoder;
 import coders.MessageEncoder;
-import coders.SendFrames;
 
 
 @ClientEndpoint( encoders = { MessageEncoder.class }, decoders = { MessageDecoder.class } )
@@ -24,8 +23,8 @@ public class EventSocketClient
 		sess.setMaxTextMessageBufferSize(1000*2048);
 		System.out.println("Socket Connected: " + sess);
 		if(contr==null)contr=new Controller();
-		Thread thread=new Thread(new SendFrames(sess, 0));
-		thread.start();
+		contr.setSession(sess);
+
 		
 	}
 

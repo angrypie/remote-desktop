@@ -9,17 +9,21 @@ import java.awt.image.BufferedImage;
 
 import javax.json.JsonObject;
 import javax.swing.ImageIcon;
+import javax.websocket.Session;
+
 import coders.Message;
 import simpleUI.UIimageTest;
 
 public class Controller {
-	UIimageTest frame;
-	Robot robot;
-	MessageDecoder dec;
+	private UIimageTest frame;
+	private Robot robot;
+	private MessageDecoder dec;
+	private Session sess;
 	
 	public Controller() {
 		super();
 	}
+	
 	
 	public void startController(){
 		try {
@@ -31,10 +35,18 @@ public class Controller {
 	}
 
 	public void newMessage(Message message){
-		if(message.getAction().compareTo("IMG_FRAME")==0)getFrame(message);
-		else if(message.getAction().compareTo("MOUSE_MOVE")==0)mouseMove(message);
-		else if(message.getAction().compareTo("MOUSE_LCLICK")==0)mouseClick(1);
-		else if(message.getAction().compareTo("MOUSE_RCLICK")==0)mouseClick(3);
+		String action=message.getAction();
+		if(action.compareTo("IMG_FRAME")==0)getFrame(message);
+		else if(action.compareTo("MOUSE_MOVE")==0)mouseMove(message);
+		else if(action.compareTo("MOUSE_LCLICK")==0)mouseClick(1);
+		else if(action.compareTo("MOUSE_RCLICK")==0)mouseClick(3);
+		else if(action.compareTo("START_VIEW")==0)startView();
+	}
+	
+	private void startView(){
+		System.out.println("startWiew");
+		Thread thread=new Thread(new SendFrames(sess, 0));
+		thread.start();
 	}
 	
 	private void getFrame(Message message){
@@ -51,11 +63,6 @@ public class Controller {
 	}
 
 	private void mouseMove(Message message){
-		//String point[]=message.getData().toString().split(",");
-		
-		//int x=Integer.valueOf(point[0]);
-
-		//int y=Integer.valueOf(point[1]);
 		JsonObject json=dec.getJson((String)message.getData());
 		int x=Integer.valueOf(json.getString("x"));
 		int y=Integer.valueOf(json.getString("y"));
@@ -70,5 +77,9 @@ public class Controller {
 			robot.mousePress(InputEvent.BUTTON3_MASK);
 			robot.mouseRelease(InputEvent.BUTTON3_MASK);
 		}
+	}
+
+	public void setSession(Session sess) {
+		this.sess=sess;
 	}
 }
