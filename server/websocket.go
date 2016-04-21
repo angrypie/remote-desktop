@@ -6,11 +6,19 @@ import (
 	"net/http"
 )
 
-func wsServerStart() {
-	log.Printf("Start")
-	http.HandleFunc("/", wsServerHandler)
+type Message struct {
+	Action string
+	Data   string
+}
 
-	if err := http.ListenAndServe(":6789", nil); err != nil {
+func wsServerStart() {
+	//dev
+	port := ":9595"
+	log.Printf("Start")
+	hostConnectios = make(map[string]*Host)
+
+	http.HandleFunc("/", wsServerHandler)
+	if err := http.ListenAndServe(port, nil); err != nil {
 		log.Panicln("ListenAndServe: ", err)
 	}
 }
@@ -26,20 +34,33 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicln("wsUpgrade: ", err)
 	}
-
 	defer ws.Close()
+
 	//dev
 	defer log.Println("Conn closed")
 	//dev
 	log.Println("New connction: ", ws.RemoteAddr())
+
+	msg := new(Message)
 	for {
-		_, msg, err := ws.ReadMessage()
+		err := ws.ReadJSON(msg)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				log.Println("wsHandler: ", err)
+				log.Println("Websocket handler: ", err)
 			}
 			break
 		}
-		log.Println(msg)
+
+		switch msg.Action {
+		case "HOST_REGISTER":
+			hostRegister(&msg.Data, ws)
+			break
+		case "GET_HOSTS":
+			getHosts(&msg.Data, ws)
+			break
+		case "SELECT_HOST":
+			selectHost(&msg.Data, ws)
+			break
+		}
 	}
 }

@@ -6,5 +6,6 @@ import (
 
 func Start() {
 	log.Println("Server started")
-	initDb()
+	wsServerStart()
+	//initDb()
 }
