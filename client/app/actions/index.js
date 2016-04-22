@@ -23,6 +23,34 @@ export function getHosts(server) {
 	}
 }
 
+export function selectHost(host, server) {
+	return dispatch => {
+		const conn = new WebSocket('ws://'+server)
+		conn.onopen = () => {
+			conn.send(JSON.stringify({
+				action: "SELECT_HOST",
+				data: host
+			}))
+		}
+
+		conn.onmessage = (event) => {
+			let {Action, Data} = JSON.parse(event.data)
+			console.log("GET: ", Action, " ", Data)
+			switch (Action) {
+				case "SELECT_SUCCESS":
+					dispatch({
+						type: types.SELECT_HOST,
+						host: { login: host, conn: conn }
+					})
+					conn.send(JSON.stringify({
+						action: "PING", data: ""
+					}))
+					break
+			}
+		}
+	}
+}
+
 
 export function setUser(name) {
 	return {

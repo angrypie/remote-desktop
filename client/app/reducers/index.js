@@ -6,7 +6,8 @@ const initialState = {
 	},
 
 	hosts: {
-		avaliable: []
+		avaliable: [],
+		current: null
 	}
 }
 
@@ -24,6 +25,8 @@ function hosts(state = initialState.hosts, action) {
 	switch (action.type) {
 		case types.GET_HOSTS:
 			return {...state, avaliable: action.hosts}
+		case types.SELECT_HOST:
+			return {...state, current: action.host }
 		default:
 			return state
 	}
