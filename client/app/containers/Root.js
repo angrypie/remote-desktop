@@ -12,16 +12,16 @@ class Root extends Component {
 		return (
 			<div>
 				<Controll user={this.props.user} />
-				<SocketManager />
+				<SocketManager hosts={this.props.hosts} server="localhost:9595" />
 			</div>
 			)
 	}
 }
 
 function mapStateToProps(state) {
-	console.log(state)
 	return {
-		user: state.user
+		user: state.user,
+		hosts: state.hosts
 	}
 }
 

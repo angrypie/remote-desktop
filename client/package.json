@@ -10,14 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "babel-polyfill": "^6.7.4",
-    "babel-runtime": "^6.6.1",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
-    "react-redux": "^4.4.5",
-    "react-router": "^2.0.0",
-    "redux": "^3.5.1",
-    "redux-saga": "^0.9.5"
+    "babel-polyfill": "*",
+    "babel-runtime": "*",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-redux": "*",
+    "react-router": "*",
+    "redux": "*",
+    "redux-thunk": "^2.0.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",

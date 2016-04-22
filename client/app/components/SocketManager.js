@@ -1,48 +1,26 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getHosts } from '../actions'
 
 
 
 class SocketManager extends Component {
 	componentWillMount() {
-		this.setState({
-			server: "localhost:9595",
-			hosts: []
-		})
-
+		let { dispatch, server } = this.props
+		dispatch(getHosts(server))
 	}
 
 	getHosts() {
-		return this.state.hosts.map((i) => <div className="host">i.name</div>)
+		let { hosts } = this.props
+		return hosts.avaliable.map((host, i) => <div className="host" key={i}>{host}</div>)
 	}
 
 	render() {
-		let socket = new WebSocket("ws://" + this.state.server)
-		socket.onopen = () => {
-			console.log('Connection established')
-
-			socket.send(JSON.stringify({
-				action: "GET_HOSTS",
-				data: ""
-			}))
-		}
-
-		socket.onmessage = (event) =>  {
-			console.log("answer: ", event.action, event.data)
-			if(event.action == "AVALIABLE_HOSTS") {
-				socket.send(JSON.stringify({
-					action: "SELECT_HOST",
-					data: event.data[0]
-				}))
-				socket.send(JSON.stringify({
-					action: "MOUSE_LCLICK",
-					data: "ololo"
-				}))
-			}
-		}
 		return (
 			<div>
+				<h2>Avaliable host:</h2>
 				<div className="hosts">
-					{ this.getHosts() }
+					{this.getHosts()}
 				</div>
 				<div className="data">
 				</div>
@@ -50,5 +28,8 @@ class SocketManager extends Component {
 		)
 	}
 }
+
+SocketManager = connect()(SocketManager)
+
 
 export default SocketManager
