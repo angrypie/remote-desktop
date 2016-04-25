@@ -1,17 +1,15 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import sagas from '../sagas'
+import thunk from 'redux-thunk'
 import reducers from '../reducers'
 
-const mainReducer = combineReducers({
+const reducer = combineReducers({
 	...reducers
 })
 
-const sagaMiddleware = createSagaMiddleware(sagas)
 
 const store = createStore(
-	mainReducer,
-	applyMiddleware(sagaMiddleware)
+	reducer,
+	applyMiddleware(thunk)
 )
 
 export default function configureStore() {

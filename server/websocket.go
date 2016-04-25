@@ -34,10 +34,7 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicln("wsUpgrade: ", err)
 	}
-	defer ws.Close()
 
-	//dev
-	defer log.Println("Conn closed")
 	//dev
 	log.Println("New connction: ", ws.RemoteAddr())
 
@@ -53,7 +50,8 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 
 		switch msg.Action {
 		case "HOST_REGISTER":
-			hostRegister(&msg.Data, ws)
+			wait := hostRegister(&msg.Data, ws)
+			<-*wait
 			break
 		case "GET_HOSTS":
 			getHosts(&msg.Data, ws)

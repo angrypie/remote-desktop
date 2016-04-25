@@ -1,20 +1,40 @@
 import * as types from '../constants/actions.js'
 
 const initialState = {
-	name: "John Doe"
+	user: {
+		name: "John Doe"
+	},
+
+	hosts: {
+		avaliable: [],
+		current: null
+	}
 }
 
-function user(state = initialState, action) {
+function user(state = initialState.user, action) {
 	switch (action.type) {
 		case types.SET_USER:
 			return {...state, name: action.name}
 		default:
 			return state
 	}
+
+}
+
+function hosts(state = initialState.hosts, action) {
+	switch (action.type) {
+		case types.GET_HOSTS:
+			return {...state, avaliable: action.hosts}
+		case types.SELECT_HOST:
+			return {...state, current: action.host }
+		default:
+			return state
+	}
 }
 
 const reducers = {
-	user
+	user,
+	hosts
 }
 
 export default reducers

@@ -37,11 +37,27 @@ func addHost(login string) {
 	}
 
 	for {
+		log.Println(login, ": wait message...")
 		err = c.ReadJSON(&action)
 		if err != nil {
 			log.Println("readJson:", err)
 			return
 		}
 		log.Println(login, ":\n", action.Action, "\n", action.Data)
+		if action.Action == "PING" {
+			action := struct {
+				Action string
+				Data   string
+			}{
+				"PONG",
+				login,
+			}
+			err = c.WriteJSON(&action)
+			if err != nil {
+				log.Println("writeJson:", err)
+				return
+			}
+
+		}
 	}
 }
