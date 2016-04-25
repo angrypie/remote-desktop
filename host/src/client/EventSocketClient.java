@@ -24,8 +24,7 @@ public class EventSocketClient
 		System.out.println("Socket Connected: " + sess);
 		if(contr==null)contr=new Controller();
 		contr.setSession(sess);
-
-		
+		sess.getAsyncRemote().sendObject(new Message("HOST_REGISTER","alex"));
 	}
 
 	@OnMessage

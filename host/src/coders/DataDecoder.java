@@ -17,8 +17,10 @@ public class DataDecoder {
 		Object data;
 		if(action.compareTo("IMG_FRAME")==0)data=decodeImage(json);
 		else if(action.compareTo("MOUSE_MOVE")==0) data=decodeMouseMove(json);
-		else if(action.compareTo("MOUSE_RCLICK")==0 || action.compareTo("MOUSE_LCLICK")==0)data=decodeAction(json);
-		else if (action.compareTo("START_VIEW")==0) data=decodeAction(json);
+		else if(action.compareTo("MOUSE_RCLICK")==0 || action.compareTo("MOUSE_LCLICK")==0)data=decodeSystemMessage(json);
+		else if (action.compareTo("START_STREAM")==0) data=decodeSystemMessage(json);
+		else if (action.compareTo("STOP_STREAM")==0) data=decodeSystemMessage(json);
+		else if (action.compareTo("CLIENT_CLOSE")==0) data=decodeSystemMessage(json);
 		else data=null;
 		return data;
 	}
@@ -28,11 +30,6 @@ public class DataDecoder {
 		BufferedImage bImage = null;
 		try {
 			byte[] output = Base64.getDecoder().decode(imageString);
-			/*try {
-				output=decompress(output);
-			} catch (DataFormatException e) {
-				e.printStackTrace();
-			}*/
 			ByteArrayInputStream bais = new ByteArrayInputStream(output);
 			bImage = ImageIO.read(bais);
 		} catch (IOException ex) {
@@ -58,7 +55,7 @@ public class DataDecoder {
 		return json.getString("data");
 	}
 	
-	public Object decodeAction(JsonObject json){
+	public Object decodeSystemMessage(JsonObject json){
 		return null;
 	}
 }

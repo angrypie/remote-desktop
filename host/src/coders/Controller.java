@@ -19,6 +19,8 @@ public class Controller {
 	private Robot robot;
 	private MessageDecoder dec;
 	private Session sess;
+	private Thread thread;
+	private SendFrames sendFrames;
 	
 	public Controller() {
 		super();
@@ -40,12 +42,29 @@ public class Controller {
 		else if(action.compareTo("MOUSE_MOVE")==0)mouseMove(message);
 		else if(action.compareTo("MOUSE_LCLICK")==0)mouseClick(1);
 		else if(action.compareTo("MOUSE_RCLICK")==0)mouseClick(3);
-		else if(action.compareTo("START_VIEW")==0)startView();
+		else if(action.compareTo("START_STREAM")==0)startView();
+		else if(action.compareTo("STOP_STREAM")==0)stopView();
+		else if(action.compareTo("CLIENT_CLOSE")==0)clientClose();
+		else message.setData(null);
 	}
 	
+	private void clientClose() {
+		if(thread!=null && sendFrames!=null){
+			sendFrames.stopStream();
+		}
+	}
+
+
+	private void stopView() {
+		if(thread!=null && sendFrames!=null){
+			sendFrames.stopStream();
+		}
+	}
+
+
 	private void startView(){
-		System.out.println("startWiew");
-		Thread thread=new Thread(new SendFrames(sess, 0));
+		sendFrames=new SendFrames(sess, 0);
+		thread=new Thread(sendFrames);
 		thread.start();
 	}
 	

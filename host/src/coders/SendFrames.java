@@ -26,6 +26,7 @@ public class SendFrames implements Runnable{
 	private long start=0;
 	private int count=0;
 	private Basic sync;
+	private volatile boolean startStream=true; 
 
 	public SendFrames(Session sess,int delay) {
 		try {
@@ -53,12 +54,16 @@ public class SendFrames implements Runnable{
 				null);
 		grfx.dispose();
 	}
+	
+	public void stopStream(){
+		startStream=false;
+	}
 
 
 	@Override
 	public void run() {
 		start=System.currentTimeMillis();
-		while(true){
+		while(startStream==true){
 			buf= robot.createScreenCapture(rect) ;
 			showCursor(buf);
 			//async.sendObject(new Message("IMG_FRAME",buf));

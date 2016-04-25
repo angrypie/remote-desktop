@@ -20,6 +20,7 @@ public class MessageDecoder implements Decoder.Text< Message > {
 
 	@Override
 	public Message decode( final String str ) throws DecodeException {
+		System.out.println("get message");
 		final Message message = new Message();
 		JsonObject json=getJson(str);
 		String action=json.getString("action");
