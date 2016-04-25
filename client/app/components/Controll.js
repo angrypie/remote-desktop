@@ -55,7 +55,6 @@ class Controll extends Component {
 			</div>
 		)
 	}
-
 }
 
 Controll = connect()(Controll)

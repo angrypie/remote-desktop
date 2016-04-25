@@ -34,17 +34,26 @@ export function selectHost(host, server) {
 		}
 
 		conn.onmessage = (event) => {
-			let {Action, Data} = JSON.parse(event.data)
-			console.log("GET: ", Action, " ", Data)
+			let {Action, Data, action, data} = JSON.parse(event.data)
+			if(Action == undefined) {
+				Action = action
+				Data = data
+			}
 			switch (Action) {
 				case "SELECT_SUCCESS":
 					dispatch({
 						type: types.SELECT_HOST,
-						host: { login: host, conn: conn }
+						host: { login: host, conn: conn, streaming: true}
 					})
 					conn.send(JSON.stringify({
-						action: "PING", data: ""
+						action: "START_STREAM", data: ""
 					}))
+					break
+				case "IMG_FRAME":
+					dispatch({
+						type: types.NEW_FRAME,
+						frame: Data
+					})
 					break
 			}
 		}
