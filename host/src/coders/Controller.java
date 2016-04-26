@@ -19,16 +19,6 @@ public class Controller {
 	public Controller() {
 		super();
 	}
-	
-	
-	public void startController(){
-		try {
-			this.robot = new Robot();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-		dec=new MessageDecoder();
-	}
 
 	public void newMessage(Message message){
 		String action=message.getAction();
@@ -91,5 +81,11 @@ public class Controller {
 
 	public void setSession(Session sess) {
 		this.sess=sess;
+		try {
+			this.robot = new Robot();
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
