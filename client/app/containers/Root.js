@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import Controll from '../components/Controll'
+import Display from '../components/Display'
 
 
 
@@ -10,7 +11,8 @@ class Root extends Component {
 	render() {
 		return (
 			<div>
-				<Controll hosts={this.props.hosts} server="localhost:9595" />
+				<Controll hosts={this.props.hosts} server={this.props.server.addr} />
+				<Display host={this.props.hosts.current} />
 			</div>
 			)
 	}
@@ -19,7 +21,8 @@ class Root extends Component {
 function mapStateToProps(state) {
 	return {
 		user: state.user,
-		hosts: state.hosts
+		hosts: state.hosts,
+		server: state.server
 	}
 }
 

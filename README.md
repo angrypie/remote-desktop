@@ -15,8 +15,10 @@
 
 **Host:**
 * MOUSE_MOVE - Перемещение мыши.
-* MOUSE_RCLICK - Правый клик мыши.
-* MOUSE_LCLICK - Левый клик мыши.
+* MOUSE_RPRESS - Зажать правую кнопку мыши.
+* MOUSE_RRELEASE - Отпустить правую кнопку мыши.
+* MOUSE_LPRESS - Зажать левую кнопку мыши.
+* MOUSE_LRELEASE - Отпустить левую кнопку мыши.
 
 **Client:**
 * IMG_FRAME - Кадр с хоста.
