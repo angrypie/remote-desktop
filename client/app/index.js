@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import "file?name=index.html!./index.html"
-import Root from './containers/Root.js'
+import Root from './components/Root.js'
 import configureStore from './store/configureStore.js'
 
 import { Provider } from 'react-redux'

@@ -11,11 +11,11 @@ export function getHosts(server) {
 		}
 
 		conn.onmessage = (event) => {
-			let {Action, Data} = JSON.parse(event.data)
-			if(Action == "AVALIABLE_HOSTS") {
+			let {action, data} = JSON.parse(event.data)
+			if(action == "AVALIABLE_HOSTS") {
 				dispatch({
 					type: types.GET_HOSTS,
-					hosts: Data
+					hosts: data
 				})
 				conn.close()
 			}
@@ -35,10 +35,6 @@ export function selectHost(host, server) {
 
 		conn.onmessage = (event) => {
 			let {Action, Data, action, data} = JSON.parse(event.data)
-			if(Action == undefined) {
-				Action = action
-				Data = data
-			}
 			switch (Action) {
 				case "SELECT_SUCCESS":
 					dispatch({

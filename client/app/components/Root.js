@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import Controll from '../components/Controll'
-import Display from '../components/Display'
+import Controll from './Controll'
+import Display from './Display'
 
 
 

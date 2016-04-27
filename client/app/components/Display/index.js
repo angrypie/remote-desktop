@@ -7,7 +7,7 @@ class Display extends Component {
 		let { host } = this.props
 		return (
 			<div class="screen">
-				<img src={"data:image/png;base64," + host.frame}/>
+			{ host.frame == undefined ? <img /> : <img src={"data:image/png;base64," + host.frame} /> }
 			</div>
 		)
 	}

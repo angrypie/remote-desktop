@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { setUser, getHosts, selectHost } from '../actions'
+import { setUser, getHosts, selectHost } from 'actions'
+import SelectHosts from './SelectHosts'
+import ControllStatus from './ControllStatus'
 
 
 class Controll extends Component {
@@ -20,7 +22,7 @@ class Controll extends Component {
 			<div className="host" key={i} onClick={ e => {
 				e.preventDefault()
 				this.setState({selectedHost: host})
-			} }>{host}</div>)
+			} }>{host.login}</div>)
 	}
 
 	selectHost() {
@@ -32,6 +34,7 @@ class Controll extends Component {
 
 	render() {
 		let { dispatch, hosts } = this.props
+
 		let btnStyle = {
 			cursor: "pointer",
 			padding: "5px 10px",
@@ -39,19 +42,12 @@ class Controll extends Component {
 			border: "1px solid black",
 			display: "inline-block"
 		}
-
-		let statusLine = {
-			display: "inline-block",
-			margin: "0 10px"
-		}
+		
 		return (
 			<div className="select-host" >
 				<div className="btn" style={btnStyle} onClick={this.selectHost.bind(this)}>Connect</div>
-				<div style={statusLine}>Selected host: {this.state.selectedHost || "[not selected]"}</div>
-				<div style={statusLine}>Status: {hosts.current == null ? "[not connected]" : "Connected to " + hosts.current.login}</div>
-				<div className="hosts">
-					{this.avaliableHosts()}
-				</div>
+				<SelectHosts hosts={hosts} hostSelected={(name) => this.setState({selectedHost: name})} />
+				<ControllStatus current={hosts.current} />
 			</div>
 		)
 	}

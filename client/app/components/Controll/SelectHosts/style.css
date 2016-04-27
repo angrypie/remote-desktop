@@ -1,0 +1,13 @@
+
+.host {
+	cursor:pointer;
+	color: white;
+}
+
+.free {
+	background: green;
+}
+
+.busy {
+	background: red;
+}
