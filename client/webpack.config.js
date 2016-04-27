@@ -1,12 +1,13 @@
-var path, config, webpack, autoprefixer;
+var config;
 
-path = require('path');
-webpack = require('webpack');
+var path = require('path');
+var webpack = require('webpack');
+
 
 const NODE_ENV = process.env.NODE_ENV || 'DEVELOP';
 
 config = {
-	devtool: 'cheap-module-eval-source-map',
+	devtool: getDevtool(),
 	entry: getEntry(),
 
 	output: {
@@ -15,10 +16,16 @@ config = {
 		filename: 'bundle.js'
 	},
 
+	resolve: {
+		root: path.resolve(__dirname, 'app'),
+		extensions: ['', '.js']
+	},
+
 	plugins: getPlugins(),
 
 	module: {
 		loaders: [
+			// js babel
 			{
 				test: /\.jsx?$/,
 				exclude: /(node_modules|bower_components)/,
@@ -27,12 +34,17 @@ config = {
 					presets: ['es2015', 'stage-0', 'react']
 				},
 				plugins: ['transform-runtime']
+			},
+			// css
+			{
+				test: /\.css$/,
+				loaders: ["style", "css?modules&importLoaders=1&localIdentName=[name]__[local]__[hash:base64:5]", "postcss"]
 			}
 		]
 	},
 
 	postcss: function () {
-		return [autoprefixer, nesting, customProperties];
+		return [];
 	},
 
 	devServer: {
@@ -43,6 +55,14 @@ config = {
 	}
 };
 
+function getDevtool() {
+	var variant = {
+		"DEVELOP": 'cheap-module-eval-source-map',
+		"PRODUCTION": ''
+	};
+	return variant[NODE_ENV];
+}
+
 function getEntry() {
 	var variant = {
 		"DEVELOP": ['webpack-dev-server/client?http://localhost:1337', 'webpack/hot/dev-server', './app/index.js'],
@@ -52,9 +72,14 @@ function getEntry() {
 }
 
 function getPlugins() {
+	var base = [
+			new webpack.DefinePlugin({
+				NODE_ENV: JSON.stringify(NODE_ENV)
+			}),
+			new webpack.optimize.OccurenceOrderPlugin(),
+	]
 	var variant = {
 		"DEVELOP": [
-			new webpack.optimize.OccurenceOrderPlugin(),
 	    new webpack.HotModuleReplacementPlugin(),
 	    new webpack.NoErrorsPlugin()
 		],
@@ -68,7 +93,7 @@ function getPlugins() {
 			})
 		]
 	};
-	return variant[NODE_ENV];
+	return base.concat(variant[NODE_ENV]);
 }
 
 if(NODE_ENV == 'PRODUCTION') {
@@ -77,5 +102,3 @@ if(NODE_ENV == 'PRODUCTION') {
 }
 
 module.exports = config;
-console.log(config.plugins)
-console.log(config.entry)
