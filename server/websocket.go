@@ -6,11 +6,6 @@ import (
 	"net/http"
 )
 
-type Message struct {
-	Action string
-	Data   string
-}
-
 func wsServerStart() {
 	//dev
 	port := ":9595"
@@ -38,7 +33,7 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	//dev
 	log.Println("New connction: ", ws.RemoteAddr())
 
-	msg := new(Message)
+	msg := new(Action)
 	for {
 		err := ws.ReadJSON(msg)
 		if err != nil {

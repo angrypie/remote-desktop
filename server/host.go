@@ -5,10 +5,10 @@ import (
 )
 
 type Host struct {
-	login  string
-	conn   *websocket.Conn
-	wait   *chan bool
-	active bool
+	Login  string
+	Conn   *websocket.Conn
+	Wait   *chan bool
+	Active bool
 }
 
 var hostConnectios map[string]*Host

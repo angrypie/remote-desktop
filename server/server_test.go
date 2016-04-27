@@ -28,7 +28,7 @@ func addHost(login string) {
 	}
 	defer c.Close()
 
-	action := Message{"HOST_REGISTER", login}
+	action := Action{"HOST_REGISTER", login}
 
 	err = c.WriteJSON(&action)
 	if err != nil {
@@ -37,7 +37,7 @@ func addHost(login string) {
 	}
 
 	for {
-		log.Println(login, ": wait message...")
+		log.Println(login, ": wait Action...")
 		err = c.ReadJSON(&action)
 		if err != nil {
 			log.Println("readJson:", err)

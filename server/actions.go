@@ -6,101 +6,86 @@ import (
 	"log"
 )
 
+type Action struct {
+	Action string      `json:"action"`
+	Data   interface{} `json:"data"`
+}
+
+func sendAction(action *Action, conn *websocket.Conn) {
+	if err := conn.WriteJSON(action); err != nil {
+		log.Println("sendAction[", action.Action, "] WriteJSON: ", err)
+	}
+}
+
 //Add new entry to hostConnections map
-func hostRegister(data *string, host *websocket.Conn) *chan bool {
+func hostRegister(data *interface{}, host *websocket.Conn) *chan bool {
+	name, _ := (*data).(string)
 	wait := make(chan bool)
-	hostConnectios[*data] = &Host{*data, host, &wait, false}
+	hostConnectios[name] = &Host{name, host, &wait, false}
 	return &wait
 }
 
-//Return info about avaliable hosts to client.
-//Server send HOSTS with array of host names
-func getHosts(data *string, client *websocket.Conn) {
-	hosts := make([]string, len(hostConnectios))
+//Send info about avaliable hosts to client.
+//
+func getHosts(data *interface{}, client *websocket.Conn) {
+	type hostInfo struct {
+		Login  string `json:"login"`
+		Active bool   `json:"active"`
+	}
+	hosts := make([]hostInfo, len(hostConnectios))
 	i := 0
-	for host := range hostConnectios {
-		hosts[i] = host
+	for _, host := range hostConnectios {
+		hosts[i] = hostInfo{host.Login, host.Active}
 		i++
 	}
-	action := struct {
-		Action string
-		Data   []string
-	}{
-		"AVALIABLE_HOSTS",
-		hosts,
-	}
+	sendAction(&Action{"AVALIABLE_HOSTS", hosts}, client)
+}
 
-	if err := client.WriteJSON(action); err != nil {
-		log.Println("getHosts, WriteJSON: ", err)
+//Client connects to host. Client and host send messages to each other
+//and server doesn't process these messages, just forwards them
+func selectHost(data *interface{}, client *websocket.Conn) {
+	name, _ := (*data).(string)
+	host := hostConnectios[name]
+	if host.Active {
+		sendAction(&Action{"HOST_BUSY", ""}, client)
+		return
+	}
+	host.Active = true
+	sendAction(&Action{"SELECT_SUCCESS", host.Login}, client)
+
+	client_close := make(chan bool)
+	host_close := make(chan bool)
+	//client to host relay
+	go websocketCopy(client, host.Conn, client_close)
+	//host to client relay
+	go websocketCopy(host.Conn, client, host_close)
+
+	select {
+	case <-client_close:
+		sendAction(&Action{"CLIENT_CLOSE", ""}, host.Conn)
+	case <-host_close:
+		sendAction(&Action{"HOST_CLOSE", ""}, client)
 	}
 }
 
-func selectHost(data *string, client *websocket.Conn) {
-	host := hostConnectios[*data]
-	if host.active {
-		host_busy := Message{"HOST_BUSY", ""}
-		if err := client.WriteJSON(&host_busy); err != nil {
-			log.Println("host_busy, WriteJSON: ", err)
-		}
-		return
-	}
-	host.active = true
-
-	select_success := Message{"SELECT_SUCCESS", host.login}
-	if err := client.WriteJSON(&select_success); err != nil {
-		log.Println("select_sucess, WriteJSON: ", err)
-	}
-
-	exit := make(chan bool)
-	//client to host
-	go func() {
-		defer func() {
-			exit <- true
-		}()
-		for {
-			messageType, r, err := client.NextReader()
-			if err != nil {
-				return
-			}
-			w, err := host.conn.NextWriter(messageType)
-			if err != nil {
-				log.Panic(err)
-			}
-			if _, err := io.Copy(w, r); err != nil {
-				log.Panic(err)
-			}
-			if err := w.Close(); err != nil {
-				log.Panic(err)
-			}
-		}
+func websocketCopy(from, to *websocket.Conn, close chan bool) {
+	defer func() {
+		close <- true
 	}()
-
-	//host to client
-	go func() {
-		defer func() {
-			exit <- true
-		}()
-		for {
-			messageType, r, err := host.conn.NextReader()
-			if err != nil {
-				return
-			}
-			w, err := client.NextWriter(messageType)
-			if err != nil {
-				log.Panic(err)
-			}
-			if _, err := io.Copy(w, r); err != nil {
-				log.Panic(err)
-			}
-			if err := w.Close(); err != nil {
-				log.Panic(err)
-			}
+	for {
+		ActionType, r, err := from.NextReader()
+		if err != nil {
+			return
 		}
-	}()
-	<-exit
-	host.active = false
-	client_close := Message{"CLIENT_CLOSE", ""}
-	if err := host.conn.WriteJSON(&client_close); err != nil {
-		log.Println("client_close, WriteJSON: ", err)
+		w, err := to.NextWriter(ActionType)
+		if err != nil {
+			log.Panic(err)
+		}
+		if _, err := io.Copy(w, r); err != nil {
+			log.Panic(err)
+		}
+		if err := w.Close(); err != nil {
+			log.Panic(err)
+		}
 	}
 }
