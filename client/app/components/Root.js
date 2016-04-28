@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import './Root.css'
 
 import Controll from './Controll'
 import Display from './Display'

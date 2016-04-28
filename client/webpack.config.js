@@ -2,6 +2,10 @@ var config;
 
 var path = require('path');
 var webpack = require('webpack');
+var autoprefixer = require('autoprefixer');
+var customProperties = require("postcss-custom-properties")
+var atImport = require("postcss-import");
+
 
 
 const NODE_ENV = process.env.NODE_ENV || 'DEVELOP';
@@ -44,7 +48,14 @@ config = {
 	},
 
 	postcss: function () {
-		return [];
+		return [
+			atImport({
+				addDependencyTo: webpack,
+				path: ['./app/styles']
+			}),
+			customProperties,
+			autoprefixer({browsers: ['last 3 versions']})
+		];
 	},
 
 	devServer: {

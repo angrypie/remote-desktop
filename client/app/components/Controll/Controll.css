@@ -1,0 +1,6 @@
+@import "colors.css";
+
+.controll {
+	background: var(--main);
+	
+}

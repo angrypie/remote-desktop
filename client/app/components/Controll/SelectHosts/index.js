@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './style.css'
+import styles from './SelectHosts.css'
 
 let SelectHosts  = ({ hosts, hostSelected }) => {
 	let host_divs =  hosts.avaliable.map((host, i) =>
