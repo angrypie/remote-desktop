@@ -16,15 +16,17 @@ import coders.MessageEncoder;
 @ClientEndpoint( encoders = { MessageEncoder.class }, decoders = { MessageDecoder.class } )
 public class EventSocketClient
 {
-	Controller contr;
+	private Controller contr;
+
 	@OnOpen
 	public void onWebSocketConnect(Session sess)
 	{
-		sess.setMaxTextMessageBufferSize(1000*2048);
+		sess.setMaxTextMessageBufferSize(1000*1024);
 		System.out.println("Socket Connected: " + sess);
 		if(contr==null)contr=new Controller();
 		contr.setSession(sess);
-		sess.getAsyncRemote().sendObject(new Message("HOST_REGISTER","alex"));
+		contr.registerHost();
+		//sess.getAsyncRemote().sendObject(new Message("HOST_REGISTER","alex"));
 	}
 
 	@OnMessage
@@ -44,5 +46,10 @@ public class EventSocketClient
 	public void onWebSocketError(Throwable cause)
 	{
 		cause.printStackTrace(System.err);
+	}
+	
+	public void setUser(String user,String password){
+		if(contr==null)contr=new Controller();
+		contr.setUser(user,password);
 	}
 }

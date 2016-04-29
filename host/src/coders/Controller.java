@@ -3,10 +3,9 @@ package coders;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
-
 import javax.json.JsonObject;
 import javax.websocket.Session;
-
+import client.MainWindow;
 import coders.Message;
 
 public class Controller {
@@ -15,6 +14,9 @@ public class Controller {
 	private Session sess;
 	private Thread thread;
 	private SendFrames sendFrames;
+	private String user;
+	private String password;
+
 	
 	public Controller() {
 		super();
@@ -87,5 +89,14 @@ public class Controller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void registerHost() {
+		sess.getAsyncRemote().sendObject(new Message("HOST_REGISTER",user));
+	}
+
+	public void setUser(String user, String password) {
+		this.user=user;
+		this.password=password;
 	}
 }

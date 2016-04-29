@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 public class MainWindow {
 
 	private JFrame frame;
-	private JTextField textUser;
+	private JTextField textUser= new JTextField();
 	private JTextField textServer;
 	private JPasswordField textPassword;
 	private JButton btnConnect;
@@ -66,7 +66,7 @@ public class MainWindow {
 		frame.setBounds(100, 100, 345, 182);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		textUser = new JTextField();
+		//textUser = new JTextField();
 		textUser.setColumns(10);
 		
 		JLabel lblUser = new JLabel("User");
@@ -145,7 +145,7 @@ public class MainWindow {
 		if(connect==true)getTextConnection().setText("Disconected");
 		connect=!connect;
 		JettyClient client=new JettyClient();
-		client.connectTo(getTextServer().getText(), null, null);
+		client.connectTo(getTextServer().getText(), getTextUser().getText(), null);
 	}
 	public JButton getBtnConnect() {
 		return btnConnect;

@@ -20,8 +20,10 @@ public class JettyClient{
 		String adress="ws://"+ip+":9595/events/";
 		URI uri = URI.create(adress);
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+		EventSocketClient clientEvent=new EventSocketClient();
+		clientEvent.setUser(user, password);
 		try {
-			container.connectToServer(EventSocketClient.class, uri);
+			container.connectToServer(clientEvent, uri);
 		} catch (DeploymentException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
