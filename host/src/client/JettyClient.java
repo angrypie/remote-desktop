@@ -10,13 +10,15 @@ public class JettyClient{
 	public static void main(String[] args) throws Exception{
 		URI uri = URI.create("ws://localhost:9595/events/");
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-		container.connectToServer(EventSocketClient.class, uri);
+		EventSocketClient clientEvent=new EventSocketClient();
+		clientEvent.setUser("testUser", "password");
+		container.connectToServer(clientEvent, uri);
 		while(true){
 			Thread.sleep(1000);
 		}
 	}
 
-	public void connectTo(String ip,String user,String password){
+	public int connectTo(String ip,String user,String password){
 		String adress="ws://"+ip+":9595/events/";
 		URI uri = URI.create(adress);
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -25,9 +27,10 @@ public class JettyClient{
 		try {
 			container.connectToServer(clientEvent, uri);
 		} catch (DeploymentException e) {
-			e.printStackTrace();
+			return -1;
 		} catch (IOException e) {
-			e.printStackTrace();
+			return -1;
 		}
+		return 0;
 	}
 }
