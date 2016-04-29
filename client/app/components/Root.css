@@ -1,8 +1,11 @@
 @import "colors.css";
+@import "global.css";
 
-:global body {
-	margin: 0;
-	color: var(--white);
-	font-family: Arial;
-	font-size: 11pt;
+
+.root {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: flex;
 }
+

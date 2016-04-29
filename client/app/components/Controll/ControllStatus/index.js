@@ -1,14 +1,11 @@
 import React from 'react'
+import style from '../Controll.css'
 
 let ControllStatus = ({ current }) => {
-		let statusLine = {
-			display: "inline-block",
-			margin: "0 10px"
-		}
+	let status = current.conn == null ? "Offline" : "Connected"
+
 	return (
-		<div clasName="controll-status">
-			<div style={statusLine}>Status: {current.conn == null ? "[not connected]" : "Connected to " + current.login}</div>
-		</div>
+			<div className={`label ${style.status}`}>{status}</div>
 	)
 }
 

@@ -1,6 +1,38 @@
 @import "colors.css";
 
 .controll {
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+	padding: 5px 5px;
 	background: var(--main);
-	
+	color: var(--white);
+}
+
+.controll > div {
+	margin-bottom: 10px;
+}
+
+.connectWrapper {
+	display: flex;
+}
+
+.connectWrapper > div {
+	margin-right: 5px;
+}
+.connectWrapper :last-child {
+	margin-right: 0px;
+}
+
+.connectBtn {
+	padding: 10px 20px;
+}
+
+.status {
+	flex-grow: 1;
+	padding: 10px 10px;
+}
+
+.status:hover {
+	background: var(--white);
 }

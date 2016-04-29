@@ -36,19 +36,16 @@ class Controll extends Component {
 	render() {
 		let { dispatch, hosts } = this.props
 
-		let btnStyle = {
-			cursor: "pointer",
-			padding: "5px 10px",
-			margin: "0 10px",
-			border: "1px solid black",
-			display: "inline-block"
-		}
 		
 		return (
 			<div className={style.controll} >
-				<div className="btn" style={btnStyle} onClick={this.selectHost.bind(this)}>Connect</div>
-				<SelectHosts hosts={hosts} hostSelected={(name) => this.setState({selectedHost: name})} />
-				<ControllStatus current={hosts.current} />
+				<div className={style.connectWrapper}>
+					<div className={`btn ${style.connectBtn}`} onClick={this.selectHost.bind(this)}>Connect</div>
+					<ControllStatus current={hosts.current} />
+				</div>
+				<SelectHosts hosts={hosts} 
+					hostSelected={(name) => this.setState({selectedHost: name})}
+					selected={this.state.selectedHost}/>
 			</div>
 		)
 	}

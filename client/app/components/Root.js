@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import './Root.css'
+import style from './Root.css'
 
 import Controll from './Controll'
 import Display from './Display'
@@ -11,7 +11,7 @@ import Display from './Display'
 class Root extends Component {
 	render() {
 		return (
-			<div>
+			<div className={style.root}>
 				<Controll hosts={this.props.hosts} server={this.props.server.addr} />
 				<Display host={this.props.hosts.current} />
 			</div>

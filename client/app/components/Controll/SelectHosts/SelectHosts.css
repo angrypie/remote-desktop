@@ -1,13 +1,29 @@
+@import "colors.css";
+
+.selectHosts {
+	
+}
 
 .host {
-	cursor:pointer;
-	color: white;
+	text-transform: none;
+	display: flex;
+	justify-content: space-between;
+	background: var(--dark);
 }
 
-.free {
-	background: green;
+.name {
+	flex-grow: 1;
 }
 
-.busy {
-	background: red;
+.status {
+	margin: -6px -12px;
+	width: 10px;
+}
+
+.selected {
+	background: var(--accent);
+}
+
+.unselected {
+	background: none;
 }

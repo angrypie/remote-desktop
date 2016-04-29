@@ -21,8 +21,11 @@ config = {
 	},
 
 	resolve: {
-		root: path.resolve(__dirname, 'app'),
-		extensions: ['', '.js']
+		root:[
+			path.resolve(__dirname, 'app'),
+			path.resolve(__dirname, 'app/styles')
+		],
+		extensions: ['', '.js', '.css']
 	},
 
 	plugins: getPlugins(),

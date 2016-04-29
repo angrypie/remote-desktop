@@ -1,17 +1,31 @@
 import React from 'react'
-import styles from './SelectHosts.css'
+import style from './SelectHosts.css'
 
-let SelectHosts  = ({ hosts, hostSelected }) => {
+let Host = ({ host, onClick, selected }) => {
+	let status;
+	return (
+		<div
+			className={`btn ${style.host}`}
+			onClick={ e => {
+				e.preventDefault()
+				onClick(host.login)
+			}
+		}>
+			<div className={`${style.name}`}>{host.login}</div>
+			<div
+				className={`${style.status} ${selected ? style.selected : style.unselected}`}></div>
+		</div>
+	)
+}
+
+let SelectHosts  = ({ hosts, hostSelected, selected }) => {
 	let host_divs =  hosts.avaliable.map((host, i) =>
-		<div className={
-			`${styles.host} ${host.active ? styles.busy : styles.free}`
-		} key={i} onClick={ e => {
-			e.preventDefault()
-			hostSelected(host.login)
-		} }>{host.login}</div>)
+		<Host key={i} host={host} onClick={hostSelected} selected={selected == host.login} />
+	)
 
 	return (
-		<div className="select-hosts">
+		<div className={style.selectHosts}>
+		<div className="label">Avaliable hosts:</div>
 			{host_divs}
 		</div>
 	)

@@ -34,8 +34,8 @@ export function selectHost(host, server) {
 		}
 
 		conn.onmessage = (event) => {
-			let {Action, Data, action, data} = JSON.parse(event.data)
-			switch (Action) {
+			let {action, data} = JSON.parse(event.data)
+			switch (action) {
 				case "SELECT_SUCCESS":
 					dispatch({
 						type: types.SELECT_HOST,
@@ -48,8 +48,11 @@ export function selectHost(host, server) {
 				case "IMG_FRAME":
 					dispatch({
 						type: types.NEW_FRAME,
-						frame: Data
+						frame: data
 					})
+					break
+				case "HOST_BUSY":
+					conn.close();
 					break
 			}
 		}
