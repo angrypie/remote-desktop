@@ -43,7 +43,7 @@ func addHost(login string) {
 			log.Println("readJson:", err)
 			return
 		}
-		log.Println(login, ":\n", action.Action, "\n", action.Data)
+		log.Println("host:\n", login, ":\n", action.Action, "\n", action.Data)
 		if action.Action == "PING" {
 			action := struct {
 				Action string

@@ -29,6 +29,7 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicln("wsUpgrade: ", err)
 	}
+	defer ws.Close()
 
 	//dev
 	log.Println("New connction: ", ws.RemoteAddr())
