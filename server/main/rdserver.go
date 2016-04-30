@@ -8,5 +8,6 @@ import (
 var port = flag.String("port", "9595", "Specify listening port")
 
 func main() {
+	flag.Parse()
 	server.Start(*port)
 }
