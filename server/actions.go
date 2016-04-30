@@ -11,6 +11,11 @@ type Action struct {
 	Data   interface{} `json:"data"`
 }
 
+type hostInfo struct {
+	Login  string `json:"login"`
+	Active bool   `json:"active"`
+}
+
 func sendAction(action *Action, conn *websocket.Conn) {
 	if err := conn.WriteJSON(action); err != nil {
 		log.Println("sendAction[", action.Action, "] WriteJSON: ", err)
@@ -18,23 +23,19 @@ func sendAction(action *Action, conn *websocket.Conn) {
 }
 
 //Add new entry to hostConnections map
-func hostRegister(data *interface{}, host *websocket.Conn) *chan bool {
+func hostRegister(data *interface{}, host *websocket.Conn) *Host {
 	name, _ := (*data).(string)
 	wait := make(chan bool)
-	hostConnectios[name] = &Host{name, host, &wait, false}
-	return &wait
+	new_host := &Host{name, host, &wait, false}
+	hostConnections[name] = new_host
+	return new_host
 }
 
 //Send info about avaliable hosts to client.
-//
 func getHosts(data *interface{}, client *websocket.Conn) {
-	type hostInfo struct {
-		Login  string `json:"login"`
-		Active bool   `json:"active"`
-	}
-	hosts := make([]hostInfo, len(hostConnectios))
+	hosts := make([]hostInfo, len(hostConnections))
 	i := 0
-	for _, host := range hostConnectios {
+	for _, host := range hostConnections {
 		hosts[i] = hostInfo{host.Login, host.Active}
 		i++
 	}
@@ -45,16 +46,29 @@ func getHosts(data *interface{}, client *websocket.Conn) {
 //and server doesn't process these messages, just forwards them
 func selectHost(data *interface{}, client *websocket.Conn) {
 	name, _ := (*data).(string)
-	host := hostConnectios[name]
+	host := hostConnections[name]
 	if host.Active {
 		sendAction(&Action{"HOST_BUSY", ""}, client)
 		return
 	}
 	host.Active = true
-	sendAction(&Action{"SELECT_SUCCESS", host.Login}, client)
+
+	sendAction(&Action{"CLIENT_CONNECT", ""}, host.Conn)
+
+	//Waiting host response for client connection. If host has allowed connection(CLIENT_ACCESS)
+	//than server sends SELECT_SUCCESS to client and connects client to host.
+	//If host has denied connection(CLIENT_DENIED) than server sends SELECT_DENIED
+	//and goes back to websocket handler.
+	<-*host.Wait
+	if host.Active == false {
+		sendAction(&Action{"SELECT_DENIED", ""}, client)
+		return
+	}
+	sendAction(&Action{"SELECT_SUCCESS", ""}, client)
 
 	client_close := make(chan bool)
 	host_close := make(chan bool)
+
 	//client to host relay
 	go websocketCopy(client, host.Conn, client_close)
 	//host to client relay
@@ -68,6 +82,17 @@ func selectHost(data *interface{}, client *websocket.Conn) {
 		sendAction(&Action{"HOST_CLOSE", ""}, client)
 		*host.Wait <- false
 	}
+}
+
+func clientAccess(data *interface{}, host *Host) {
+	host.Active = true
+	*host.Wait <- false
+	<-*host.Wait
+}
+
+func clientDenied(data *interface{}, host *Host) {
+	host.Active = false
+	*host.Wait <- false
 }
 
 func websocketCopy(from, to *websocket.Conn, close chan bool) {

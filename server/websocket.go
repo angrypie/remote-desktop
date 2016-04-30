@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func wsServerStart() {
+func wsServerStart(port string) {
+	port = ":" + port
 	//dev
-	port := ":9595"
 	log.Printf("Start")
-	hostConnectios = make(map[string]*Host)
+	hostConnections = make(map[string]*Host)
 
 	http.HandleFunc("/", wsServerHandler)
 	if err := http.ListenAndServe(port, nil); err != nil {
@@ -27,7 +27,7 @@ var upgrader = websocket.Upgrader{
 func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Panicln("wsUpgrade: ", err)
+		log.Println("wsUpgrade: ", err)
 	}
 	defer ws.Close()
 
@@ -35,6 +35,7 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("New connction: ", ws.RemoteAddr())
 
 	msg := new(Action)
+	var host *Host = nil
 	for {
 		err := ws.ReadJSON(msg)
 		if err != nil {
@@ -46,15 +47,15 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 
 		switch msg.Action {
 		case "HOST_REGISTER":
-			wait := hostRegister(&msg.Data, ws)
-			<-*wait
-			break
+			host = hostRegister(&msg.Data, ws)
 		case "GET_HOSTS":
 			getHosts(&msg.Data, ws)
-			break
 		case "SELECT_HOST":
 			selectHost(&msg.Data, ws)
-			break
+		case "CLIENT_ACCESS":
+			clientAccess(&msg.Data, host)
+		case "CLIENT_DENIED":
+			clientDenied(&msg.Data, host)
 		}
 	}
 }
