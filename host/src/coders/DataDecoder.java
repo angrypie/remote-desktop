@@ -20,6 +20,7 @@ public class DataDecoder {
 		else if(action.compareTo("START_STREAM")==0) data=decodeSystemMessage(json);
 		else if(action.compareTo("STOP_STREAM")==0) data=decodeSystemMessage(json);
 		else if(action.compareTo("CLIENT_CLOSE")==0) data=decodeSystemMessage(json);
+		else if(action.compareTo("CLIENT_CONNECT")==0) data=decodeSystemMessage(json);
 		else data=null;
 		return data;
 	}

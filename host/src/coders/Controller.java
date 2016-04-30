@@ -16,10 +16,12 @@ public class Controller {
 	private SendFrames sendFrames;
 	private String user;
 	private String password;
+	private boolean clientConnected;
 
 	
 	public Controller() {
 		super();
+		clientConnected=false;
 	}
 
 	public void newMessage(Message message){
@@ -32,9 +34,21 @@ public class Controller {
 		else if(action.compareTo("START_STREAM")==0)startView();
 		else if(action.compareTo("STOP_STREAM")==0)stopView();
 		else if(action.compareTo("CLIENT_CLOSE")==0)clientClose();
+		else if(action.compareTo("CLIENT_CONNECT")==0)clientConnect();
 		else message.setData(null);
 	}
 	
+	private void clientConnect() {
+		if(clientConnected==true){
+			sess.getAsyncRemote().sendObject(new Message("CLIENT_DENIED",null));
+		}else{
+			sess.getAsyncRemote().sendObject(new Message("CLIENT_ACCESS",null));
+			clientConnected=true;
+		}
+		
+		
+	}
+
 	private void mouseRelease(int i) {
 		if(i==1){
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -55,9 +69,8 @@ public class Controller {
 
 
 	private void clientClose() {
-		if(thread!=null && sendFrames!=null){
-			sendFrames.stopStream();
-		}
+		clientConnected=false;
+		stopView();
 	}
 
 

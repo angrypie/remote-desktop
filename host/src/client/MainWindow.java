@@ -22,7 +22,7 @@ public class MainWindow {
 
 	private JFrame frame;
 	private JTextField textUser= new JTextField();
-	private JTextField textServer;
+	private JTextField textServerIp;
 	private JPasswordField textPassword;
 	private JButton btnConnect;
 	private JLabel textConnection;
@@ -72,8 +72,8 @@ public class MainWindow {
 		JLabel lblUser = new JLabel("User");
 		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
 
-		textServer = new JTextField();
-		textServer.setColumns(10);
+		textServerIp = new JTextField();
+		textServerIp.setColumns(10);
 
 		JLabel lblIpserver = new JLabel("IpServer");
 		lblIpserver.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -111,7 +111,7 @@ public class MainWindow {
 												.addComponent(lblIpserver))
 										.addPreferredGap(ComponentPlacement.UNRELATED)
 										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-												.addComponent(textServer)
+												.addComponent(textServerIp)
 												.addComponent(textPassword)
 												.addComponent(textUser, GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)))
 								.addGroup(groupLayout.createSequentialGroup()
@@ -135,7 +135,7 @@ public class MainWindow {
 								.addComponent(textPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textServerIp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblIpserver))
 						.addGap(11)
 						.addComponent(btnConnect)
@@ -143,7 +143,7 @@ public class MainWindow {
 						.addComponent(textConnection)
 						.addContainerGap(34, Short.MAX_VALUE))
 				);
-		groupLayout.linkSize(SwingConstants.VERTICAL, new Component[] {textUser, lblUser, textServer, lblIpserver, lblPassword, textPassword});
+		groupLayout.linkSize(SwingConstants.VERTICAL, new Component[] {textUser, lblUser, textServerIp, lblIpserver, lblPassword, textPassword});
 		frame.getContentPane().setLayout(groupLayout);
 	}
 
@@ -164,7 +164,7 @@ public class MainWindow {
 		return btnConnect;
 	}
 	public JTextField getTextServer() {
-		return textServer;
+		return textServerIp;
 	}
 	public JPasswordField getTextPassword() {
 		return textPassword;
