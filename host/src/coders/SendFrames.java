@@ -8,11 +8,9 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.websocket.Session;
 import javax.imageio.ImageIO;
-import javax.websocket.EncodeException;
-import javax.websocket.RemoteEndpoint.Basic;
+import javax.websocket.RemoteEndpoint.Async;
 
 import coders.Message;
 
@@ -25,18 +23,17 @@ public class SendFrames implements Runnable{
 	private BufferedImage mouseCursor;
 	private long start=0;
 	private int count=0;
-	private Basic sync;
+	private Async async;
 	private volatile boolean startStream=true; 
 
 	public SendFrames(Session sess,int delay) {
 		try {
 			this.mouseCursor=ImageIO.read(new File("./content/black_cursor.png"));
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		this.sync=sess.getBasicRemote();
 		this.delay=delay;
+		async=sess.getAsyncRemote();
 		try {
 			robot=new Robot();
 		} catch (AWTException e) {
@@ -54,7 +51,7 @@ public class SendFrames implements Runnable{
 				null);
 		grfx.dispose();
 	}
-	
+
 	public void stopStream(){
 		startStream=false;
 	}
@@ -66,16 +63,7 @@ public class SendFrames implements Runnable{
 		while(startStream==true){
 			buf= robot.createScreenCapture(rect) ;
 			showCursor(buf);
-			//async.sendObject(new Message("IMG_FRAME",buf));
-			try {
-				sync.sendObject(new Message("IMG_FRAME",buf));
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (EncodeException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			async.sendObject(new Message("IMG_FRAME",buf));
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
