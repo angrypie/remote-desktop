@@ -78,9 +78,11 @@ func selectHost(data *interface{}, client *websocket.Conn) {
 	case <-client_close:
 		sendAction(&Action{"CLIENT_CLOSE", ""}, host.Conn)
 		host.Active = false
+		*host.Wait <- false
 	case <-host_close:
 		sendAction(&Action{"HOST_CLOSE", ""}, client)
 		*host.Wait <- false
+		removeHostCennection(host)
 	}
 }
 

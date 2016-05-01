@@ -15,7 +15,7 @@ func TestWebsocketServer(t *testing.T) {
 	go addHost("HostFromGoTest#2", t)
 	time.Sleep(time.Millisecond * 200)
 	go addClient("CLIENT 1", t)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 600)
 }
 
 func addHost(login string, t *testing.T) {

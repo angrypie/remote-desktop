@@ -36,6 +36,11 @@ func wsServerHandler(w http.ResponseWriter, r *http.Request) {
 
 	msg := new(Action)
 	var host *Host = nil
+	defer func() {
+		if host != nil {
+			removeHostCennection(host)
+		}
+	}()
 	for {
 		err := ws.ReadJSON(msg)
 		if err != nil {
