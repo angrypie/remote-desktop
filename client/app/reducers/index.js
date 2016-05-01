@@ -14,7 +14,7 @@ const initialState = {
 		}
 	},
 	server: {
-		addr: NODE_ENV == 'DEVELOP' ? 'localhost:9595' : '46.149.80.62:9595',
+		addr: NODE_ENV == 'DEVELOP' ? '192.168.0.104:9595' : '46.149.80.62:9595',
 	}
 }
 
