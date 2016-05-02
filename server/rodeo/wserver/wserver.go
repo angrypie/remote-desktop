@@ -2,30 +2,26 @@ package wserver
 
 import (
 	"github.com/gorilla/websocket"
-	"io"
 	"log"
 	"net/http"
 )
 
-type Message struct {
-	Reader *io.Reader
-	Type   int
+type WServer struct {
+	OnMessage OnMessageFunc
+	OnClose   OnCloseFunc
 }
-
-type WsServer struct {
-	OnMessage func(msg *Message, conn *websocket.Conn)
-}
-
-var wsServer WsServer
 
 // Run websocket-server on specified port.
-func websocketServer(port string) {
+func WebsocketServer(onmessage OnMessageFunc, onclose OnCloseFunc, port string) *WServer {
 	addr := ":" + port
-
-	http.HandleFunc("/", connectionHandler)
-	if err := http.ListenAndServe(addr, nil); err != nil {
-		log.Panicln("ListenAndServer: ", err)
-	}
+	server := &WServer{onmessage, onclose}
+	go func() {
+		http.HandleFunc("/", getConnectionHandler(server))
+		if err := http.ListenAndServe(addr, nil); err != nil {
+			log.Panicln("ListenAndServer: ", err)
+		}
+	}()
+	return server
 }
 
 //Set upgrader function, which takes http.ResponseWriter and http.Request
@@ -36,26 +32,39 @@ var gorillaUpgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
+//Returns http.HandlerFunc that has able to access to server from closure
+func getConnectionHandler(server *WServer) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		connectionHandler(w, r, server)
+	}
+}
+
 //Callback function that is called for new connection.
-func connectionHandler(w http.ResponseWriter, r *http.Request) {
+func connectionHandler(w http.ResponseWriter, r *http.Request, server *WServer) {
 	conn, err := gorillaUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("connectionHandler: gorillaUpgrader: ", err)
 		return
 	}
-	defer conn.Close()
+	defer func() {
+		log.Println("Connection close: ", conn.RemoteAddr())
+		conn.Close()
+	}()
 
 	//dev
 	log.Println("New connection: ", conn.RemoteAddr())
 
+	client := Client{server.OnMessage, conn}
 	for {
 		messageType, r, err := conn.NextReader()
 		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				log.Println("Connection handler: ", err)
+			}
+			server.OnClose(&client)
 			return
 		}
-
-		msg := &Message{&r, messageType}
-		wsServer.OnMessage(msg, conn)
+		new_msg := &Message{&r, messageType}
+		client.onmessage(new_msg, &client)
 	}
-
 }
