@@ -18,7 +18,7 @@ func WebsocketServer(onmessage OnMessageFunc, onclose OnCloseFunc, port string) 
 	go func() {
 		http.HandleFunc("/", getConnectionHandler(server))
 		if err := http.ListenAndServe(addr, nil); err != nil {
-			log.Panicln("ListenAndServer: ", err)
+			log.Println("ListenAndServer: ", err)
 		}
 	}()
 	return server

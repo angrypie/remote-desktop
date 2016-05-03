@@ -45,7 +45,9 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 		client.SendJson(&Action{"SELECT_FAIL", "host not exist"})
 		return
 	}
+	log.Println("--------------LOCK")
 	host.Lock()
+	log.Println("--------------LOCKED")
 	defer host.UnLock()
 
 	if host.Active {

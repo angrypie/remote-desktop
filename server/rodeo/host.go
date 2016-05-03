@@ -33,10 +33,10 @@ func (h *Host) Lock() {
 }
 
 func (h *Host) UnLock() {
-	if h.IsLock {
-		h.cond.L.Unlock()
-		h.IsLock = false
-	}
+	//if h.IsLock {
+	h.cond.L.Unlock()
+	h.IsLock = false
+	//}
 }
 
 func (h *Host) Signal() {

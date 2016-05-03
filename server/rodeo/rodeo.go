@@ -22,6 +22,7 @@ func getOnClose() wserver.OnCloseFunc {
 	return func(client *wserver.Client) {
 		log.Println("Close: ", client.Conn.RemoteAddr())
 
+		//if host closed
 		host := hostConnections.GetByConn(client)
 		if host != nil {
 			hostConnections.Delete(host)
@@ -31,13 +32,16 @@ func getOnClose() wserver.OnCloseFunc {
 					break
 				}
 			}
+			log.Println("SERVER: HOST_CLOSE")
 			client.SendJson(&Action{"HOST_CLOSE", ""})
 			return
 		}
 
+		//if client closed
 		host, ok := clientConnected[client]
 		if ok {
 			host.Conn.SendJson(&Action{"CLIENT_CLOSE", ""})
+			log.Println("SERVER: CLIENT_CLOSE")
 			delete(clientConnected, client)
 			host.Active = false
 		}
