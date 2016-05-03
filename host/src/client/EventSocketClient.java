@@ -38,6 +38,7 @@ public class EventSocketClient
 	@OnClose
 	public void onWebSocketClose(CloseReason reason)
 	{
+		contr.clientClose();
 		System.out.println("Socket Closed: " + reason);
 	}
 

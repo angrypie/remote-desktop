@@ -26,7 +26,6 @@ public class MainWindow {
 	private JPasswordField textPassword;
 	private JButton btnConnect;
 	private JLabel textConnection;
-	private boolean connect=false;
 
 	/**
 	 * Launch the application.
@@ -149,16 +148,11 @@ public class MainWindow {
 
 	private void onConnectClicked(){
 		JettyClient client=new JettyClient();
-		if(connect==true){
-			getTextConnection().setText("Disconected");
-			connect=false;
-		}
-		else{
-			connect=true;
-			if(client.connectTo(getTextServer().getText(), getTextUser().getText(), null)==0){
-				getTextConnection().setText("Connect success");
-			}else getTextConnection().setText("Connection error");
-		}
+		if(client.connectTo(getTextServer().getText(), getTextUser().getText(), null)==0){
+			getTextConnection().setText("Connect success");
+			getBtnConnect().setEnabled(false);
+		}else getTextConnection().setText("Connection error");
+
 	}
 	public JButton getBtnConnect() {
 		return btnConnect;

@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.websocket.Session;
 import javax.imageio.ImageIO;
-import javax.websocket.RemoteEndpoint.Async;
-
+import javax.websocket.EncodeException;
+import javax.websocket.RemoteEndpoint.Basic;
 import coders.Message;
 
 
@@ -23,7 +23,7 @@ public class SendFrames implements Runnable{
 	private BufferedImage mouseCursor;
 	private long start=0;
 	private int count=0;
-	private Async async;
+	private Basic sync;
 	private volatile boolean startStream=true; 
 
 	public SendFrames(Session sess,int delay) {
@@ -32,8 +32,8 @@ public class SendFrames implements Runnable{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		sync=sess.getBasicRemote();
 		this.delay=delay;
-		async=sess.getAsyncRemote();
 		try {
 			robot=new Robot();
 		} catch (AWTException e) {
@@ -60,20 +60,26 @@ public class SendFrames implements Runnable{
 	@Override
 	public void run() {
 		start=System.currentTimeMillis();
+
 		while(startStream==true){
 			buf= robot.createScreenCapture(rect) ;
 			showCursor(buf);
-			async.sendObject(new Message("IMG_FRAME",buf));
 			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				sync.sendObject(new Message("IMG_FRAME",buf));
+			} catch (IOException | EncodeException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			count++;
 			if(System.currentTimeMillis()-start>=1000){
 				System.out.println("fps="+count);
 				count=0;
 				start=System.currentTimeMillis();
+			}
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

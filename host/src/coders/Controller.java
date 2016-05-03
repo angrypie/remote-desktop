@@ -68,7 +68,7 @@ public class Controller {
 	}
 
 
-	private void clientClose() {
+	public void clientClose() {
 		clientConnected=false;
 		stopView();
 	}
