@@ -35,6 +35,11 @@ export function selectHost(host, server) {
 
 		conn.onmessage = (event) => {
 			let {action, data} = JSON.parse(event.data)
+			if(action == "IMG_FRAME") {
+				console.log("Action:\n", action, "\nData:\n", "img")
+			} else {
+				console.log("Action:\n", action, "\nData:\n", data)
+			}
 			switch (action) {
 				case "SELECT_SUCCESS":
 					dispatch({

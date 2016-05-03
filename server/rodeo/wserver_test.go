@@ -30,8 +30,6 @@ func TestRodeoServer(t *testing.T) {
 	time.Sleep(time.Second * 4)
 	go addClient("CLIENT 1", t)
 	time.Sleep(time.Second * 4)
-	//exit := make(chan bool)
-	//<-exit
 }
 
 func addHost(login string, t *testing.T) {
@@ -116,7 +114,7 @@ func addClient(login string, t *testing.T) {
 			}()
 		case "MSG_FROM_SERVER":
 			msg_from_server = true
-			time.Sleep(time.Millisecond * 800)
+			time.Sleep(time.Millisecond * 1500)
 			return
 		}
 	}
