@@ -47,6 +47,7 @@ func connectionHandler(w http.ResponseWriter, r *http.Request, server *WServer) 
 		return
 	}
 	defer func() {
+		//dev
 		log.Println("Connection close: ", conn.RemoteAddr())
 		conn.Close()
 	}()
@@ -55,13 +56,13 @@ func connectionHandler(w http.ResponseWriter, r *http.Request, server *WServer) 
 	log.Println("New connection: ", conn.RemoteAddr())
 
 	client := Client{server.OnMessage, conn}
+	defer server.OnClose(&client)
 	for {
 		messageType, r, err := conn.NextReader()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Println("Connection handler: ", err)
 			}
-			server.OnClose(&client)
 			return
 		}
 		new_msg := &Message{&r, messageType}

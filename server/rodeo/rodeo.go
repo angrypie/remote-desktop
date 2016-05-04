@@ -3,47 +3,56 @@ package rodeo
 import (
 	"flag"
 	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
-	"io"
+	"io/ioutil"
 	"log"
 )
 
-var clientConnected map[*wserver.Client]*Host
+//client-host relay
+var chRelay *Relay
 
 func RodeoServer() {
 	port := flag.String("port", "9595", "Specify listening port")
+	silent := flag.Bool("silent", false, "Diseble output")
 	flag.Parse()
+
+	//disable log output
+	if *silent {
+		log.SetOutput(ioutil.Discard)
+	}
+
 	hostConnections = NewHosts()
-	clientConnected = make(map[*wserver.Client]*Host)
+	chRelay = NewRelay()
 	log.Println("Server started on port: ", *port)
 	wserver.WebsocketServer(newMessage, getOnClose(), *port)
 }
 
 func getOnClose() wserver.OnCloseFunc {
-	return func(client *wserver.Client) {
-		log.Println("Close: ", client.Conn.RemoteAddr())
+	return func(conn *wserver.Client) {
+		host, ok := chRelay.GetHost(conn)
 
-		//if host closed
-		host := hostConnections.GetByConn(client)
-		if host != nil {
-			hostConnections.Delete(host)
-			for key, host := range clientConnected {
-				if host.Conn == client {
-					delete(clientConnected, key)
-					break
-				}
-			}
-			log.Println("SERVER: HOST_CLOSE")
-			client.SendJson(&Action{"HOST_CLOSE", ""})
+		//if client closed
+		if ok {
+			log.Println("\n\nflag--------flag----------flag----------1\n\n")
+			chRelay.Delete(conn)
+			host.Active = false
+			host.Conn.SendJson(&Action{"CLIENT_CLOSE", ""})
 			return
 		}
 
-		//if client closed
-		host, ok := clientConnected[client]
+		//if host closed
+		host, ok = hostConnections.GetByConn(conn)
 		if ok {
-			host.Conn.SendJson(&Action{"CLIENT_CLOSE", ""})
-			log.Println("SERVER: CLIENT_CLOSE")
-			delete(clientConnected, client)
-			host.Active = false
+			//if host was connected to client, delete that record
+			//and send HOST_CLOSE to client
+			client, ok := chRelay.GetClient(conn)
+			if ok {
+				log.Println("\n\nflag--------flag----------flag----------2\n\n")
+				chRelay.Delete(conn)
+				client.SendJson(&Action{"HOST_CLOSE", ""})
+			}
+			//delete record about host connection
+			log.Println("\n\nflag--------flag----------flag----------3\n\n")
+			hostConnections.Delete(host)
 		}
 	}
 }
@@ -66,23 +75,4 @@ func newMessage(msg *wserver.Message, client *wserver.Client) {
 	case "CLIENT_DENIED":
 		actClientDenied(&action.Data, client)
 	}
-}
-
-func copyMessage(to *wserver.Client) wserver.OnMessageFunc {
-	handler := func(msg *wserver.Message, client *wserver.Client) {
-		ActionType, r := msg.Type, msg.Reader
-
-		w, err := to.Conn.NextWriter(ActionType)
-		if err != nil {
-			log.Println("copyMessage: NextWriter:", err)
-		}
-		if _, err := io.Copy(w, *r); err != nil {
-			log.Println("copyMessage: Copy:", err)
-		}
-		if err := w.Close(); err != nil {
-			log.Println("copyMessage: Close():", err)
-		}
-	}
-
-	return handler
 }

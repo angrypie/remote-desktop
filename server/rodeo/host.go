@@ -2,7 +2,6 @@ package rodeo
 
 import (
 	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
-	//"log"
 	"sync"
 )
 
@@ -11,7 +10,7 @@ type Host struct {
 	Conn   *wserver.Client
 	Active bool
 	cond   *sync.Cond
-	IsLock bool
+	lock   bool
 }
 
 func NewHost(login string, client *wserver.Client) *Host {
@@ -19,24 +18,20 @@ func NewHost(login string, client *wserver.Client) *Host {
 	return newHost
 }
 
-func (h *Host) Wait() {
-	if !h.IsLock {
-		h.cond.L.Lock()
-	}
-	h.IsLock = false
-	h.cond.Wait()
-}
-
 func (h *Host) Lock() {
-	h.IsLock = true
+	h.lock = true
 	h.cond.L.Lock()
 }
 
-func (h *Host) UnLock() {
-	//if h.IsLock {
-	h.cond.L.Unlock()
-	h.IsLock = false
-	//}
+func (h *Host) Unlock() {
+	if h.lock != false {
+		h.cond.L.Unlock()
+		h.lock = false
+	}
+}
+
+func (h *Host) Wait() {
+	h.cond.Wait()
 }
 
 func (h *Host) Signal() {
@@ -67,6 +62,7 @@ func (h *Hosts) Add(host *Host) bool {
 	if _, ok := h.hosts[host.Login]; ok {
 		return false
 	}
+
 	h.hosts[host.Login] = host
 	return true
 }
@@ -95,11 +91,11 @@ func (h *Hosts) GetByLogin(login string) (host *Host, ok bool) {
 	return host, ok
 }
 
-func (h *Hosts) GetByConn(conn *wserver.Client) *Host {
+func (h *Hosts) GetByConn(conn *wserver.Client) (host *Host, ok bool) {
 	for _, host := range h.hosts {
 		if host.Conn == conn {
-			return host
+			return host, true
 		}
 	}
-	return nil
+	return nil, false
 }

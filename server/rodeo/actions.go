@@ -2,7 +2,7 @@ package rodeo
 
 import (
 	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
-	"log"
+	//"log"
 )
 
 /*
@@ -17,7 +17,6 @@ Host - it is device to which Client are connectiong for remote accesss
 //If host with specified login already exist on server, than send "REGISTER_FAIL"
 //with "login exist" in data field
 func actHostRegister(data *interface{}, client *wserver.Client) {
-	log.Println("REGISTER STRARt")
 	hostLogin := (*data).(string)
 	new_host := NewHost(hostLogin, client)
 	ok := hostConnections.Add(new_host)
@@ -26,7 +25,6 @@ func actHostRegister(data *interface{}, client *wserver.Client) {
 	} else {
 		client.SendJson(&Action{"REGISTER_SUCCESS", ""})
 	}
-	log.Println("REGISTER STRARt")
 }
 
 //Client requests data about avaliable host.
@@ -45,10 +43,8 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 		client.SendJson(&Action{"SELECT_FAIL", "host not exist"})
 		return
 	}
-	log.Println("--------------LOCK")
 	host.Lock()
-	log.Println("--------------LOCKED")
-	defer host.UnLock()
+	defer host.Unlock()
 
 	if host.Active {
 		client.SendJson(&Action{"SELECT_FAIL", "host busy"})
@@ -66,18 +62,18 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 	host.Conn.SetOnmessage(copyMessage(client))
 	client.SetOnmessage(copyMessage(host.Conn))
 
-	clientConnected[client] = host
+	chRelay.Add(client, host)
 	client.SendJson(&Action{"SELECT_SUCCESS", ""})
 }
 
 func actClientAccess(data *interface{}, client *wserver.Client) {
-	host := hostConnections.GetByConn(client)
+	host, _ := hostConnections.GetByConn(client)
 	host.Active = true
 	host.Signal()
 }
 
 func actClientDenied(data *interface{}, client *wserver.Client) {
-	host := hostConnections.GetByConn(client)
+	host, _ := hostConnections.GetByConn(client)
 	host.Active = false
 	host.Signal()
 }
