@@ -10,32 +10,43 @@ class Display extends Component {
 	}
 
 	componentDidMount() {
-		let visual = ReactDOM.findDOMNode(this.refs.visual)
-		visual.onclick = (event) => {
+		let desktop = ReactDOM.findDOMNode(this.refs.desktop)
+		if(desktop == null) return
+		console.log(desktop)
+		desktop.onmousedown = (event) => {
 			let { host } = this.props
 			if (host.conn == null) return
-			console.log(host)
-			event.preventDefault()
+				event.preventDefault()
 				host.conn.send(JSON.stringify({
-					action: "MOUSE_LCLICK", data: ""
+					action: "MOUSE_LPRESS", data: ""
 				}))
+		}
+
+		desktop.onmouseup = (event) => {
+			let { host } = this.props
+			if (host.conn == null) return
+				event.preventDefault()
 				host.conn.send(JSON.stringify({
 					action: "MOUSE_LRELEASE", data: ""
 				}))
 		}
-		visual.onmousemove = (event) => {
+		desktop.onmousemove = (event) => {
 			let { host } = this.props
 			if (host.conn == null) return
-			let {top, left} = visual.getBoundingClientRect()
+			let {top, left} = desktop.getBoundingClientRect()
 			let {clientX: x, clientY: y} = event
+			let {width, height, naturalWidth, naturalHeight} = desktop
+			console.log(width, height)
+			console.log(naturalWidth, naturalHeight)
+
 			this.setState({
 				position: {
-					x: x - left,
-					y: y - top
+					x: (naturalWidth / width) * (x - left),
+					y: (naturalHeight / height) * (y - top)
 				}
 			})
-				host.conn.send(JSON.stringify({
-					action: "MOUSE_MOVE", data: this.state.position
+			host.conn.send(JSON.stringify({
+				action: "MOUSE_MOVE", data: this.state.position
 				}))
 		}
 	}
@@ -43,17 +54,19 @@ class Display extends Component {
 	getFrame() {
 		let { host } = this.props
 		if (host.streaming) {
-			return <img src={"data:image/png;base64," + host.frame} />
+			let img = <img src={"data:image/png;base64," + host.frame} ref="dekstop" /> 
+			return img
 		}
 		return <div></div>
 	}
 
 
 	render() {
+		let { host } = this.props
 		return (
 			<div onmouseMove={() => this.mousemove()} className={style.display}>
 				<div className={style.visual} ref="visual">
-					{ this.getFrame() }
+					<img src={"data:image/png;base64," + host.frame} ref="desktop" />
 				</div>
 			</div>
 		)
