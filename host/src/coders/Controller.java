@@ -5,7 +5,6 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import javax.json.JsonObject;
 import javax.websocket.Session;
-import client.MainWindow;
 import coders.Message;
 
 public class Controller {
@@ -13,15 +12,24 @@ public class Controller {
 	private MessageDecoder dec;
 	private Session sess;
 	private Thread thread;
-	private SendFrames sendFrames;
+	private SendFramesWindows sendFramesWindows;
+	private SendFramesLinux sendFramesLinux;
 	private String user;
 	private String password;
 	private boolean clientConnected;
+	private int osCode;
 
-	
+
 	public Controller() {
 		super();
 		clientConnected=false;
+		String os=System.getProperty("os.name");
+		if(os.contains("Windows")){
+			osCode=0;
+		}
+		else if(os.contains("Linux")){
+			osCode=1;
+		}
 	}
 
 	public void newMessage(Message message){
@@ -37,7 +45,7 @@ public class Controller {
 		else if(action.compareTo("CLIENT_CONNECT")==0)clientConnect();
 		else message.setData(null);
 	}
-	
+
 	private void clientConnect() {
 		if(clientConnected==true){
 			sess.getAsyncRemote().sendObject(new Message("CLIENT_DENIED",null));
@@ -45,8 +53,8 @@ public class Controller {
 			sess.getAsyncRemote().sendObject(new Message("CLIENT_ACCESS",null));
 			clientConnected=true;
 		}
-		
-		
+
+
 	}
 
 	private void mouseRelease(int i) {
@@ -55,7 +63,7 @@ public class Controller {
 		}else if(i==3){
 			robot.mouseRelease(InputEvent.BUTTON3_MASK);
 		}
-		
+
 	}
 
 
@@ -75,16 +83,39 @@ public class Controller {
 
 
 	private void stopView() {
-		if(thread!=null && sendFrames!=null){
-			sendFrames.stopStream();
-		}
+		if(osCode==0)stopViewWindows();
+		else if(osCode==1)stopViewLinux();
+		else return;
 	}
 
 
+	private void stopViewLinux() {
+		if(thread!=null && sendFramesLinux!=null){
+			sendFramesLinux.stopStream();
+		}
+	}
+
+	private void stopViewWindows() {
+		if(thread!=null && sendFramesWindows!=null){
+			sendFramesWindows.stopStream();
+		}
+	}
+
 	private void startView(){
-		sendFrames=new SendFrames(sess, 0);
-		thread=new Thread(sendFrames);
+		if(osCode==0)startViewWindows();
+		else if(osCode==1)startViewLinux();
+		else return;
 		thread.start();
+	}
+
+	private void startViewLinux() {
+		sendFramesLinux=new SendFramesLinux(sess, 0);
+		thread=new Thread(sendFramesLinux);
+	}
+
+	private void startViewWindows() {
+		sendFramesWindows =new SendFramesWindows(sess, 0);
+		thread=new Thread(sendFramesWindows);
 	}
 
 	private void mouseMove(Message message){

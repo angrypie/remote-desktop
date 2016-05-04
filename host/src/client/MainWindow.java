@@ -73,6 +73,7 @@ public class MainWindow {
 
 		textServerIp = new JTextField();
 		textServerIp.setColumns(10);
+		textServerIp.setText("46.149.80.62");
 
 		JLabel lblIpserver = new JLabel("IpServer");
 		lblIpserver.setHorizontalAlignment(SwingConstants.RIGHT);

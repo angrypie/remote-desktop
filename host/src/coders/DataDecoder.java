@@ -38,7 +38,7 @@ public class DataDecoder {
 	}
 	
 	public Object decodeMouseMove(JsonObject json){
-		return json.getString("data");
+		return json.getJsonObject("data");
 	}
 	
 	public Object decodeSystemMessage(JsonObject json){
