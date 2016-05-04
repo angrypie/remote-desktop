@@ -1,10 +1,12 @@
 package coders;
+
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.websocket.Session;
+
 import javax.websocket.EncodeException;
+import javax.websocket.Session;
 import javax.websocket.RemoteEndpoint.Basic;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -12,11 +14,7 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
-import coders.Message;
-
-
-public class SendFrames implements Runnable{
-	private int delay=0;
+public class SendFramesLinux implements Runnable{
 	private BufferedImage buf;
 	private long start=0;
 	private int count=0;
@@ -26,28 +24,17 @@ public class SendFrames implements Runnable{
 	Java2DFrameConverter converter;
 	Frame frame = null;
 
-	public SendFrames(Session sess,int delay) {
+	public SendFramesLinux(Session sess,int delay) {
 		sync=sess.getBasicRemote();
-		this.delay=delay;
 		converter=new Java2DFrameConverter();
-		String os=System.getProperty("os.name");
 		Rectangle rect=new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-		if(os.contains("Windows")){
-			grabber = new FFmpegFrameGrabber("video=screen-capture-recorder");
-			grabber.setBitsPerPixel(8);
-			grabber.setImageWidth(rect.width);
-			grabber.setImageHeight(rect.height);
-			grabber.setFormat("dshow");
-			grabber.setFrameRate(30);
-		}
-		else if(os.contains("Linux")){
-			grabber = new FFmpegFrameGrabber(":0.0+" + 0 + "," + 0);
-			grabber.setBitsPerPixel(8);
-			grabber.setImageWidth(rect.width);
-			grabber.setImageHeight(rect.height);
-			grabber.setFormat("x11grab");
-			grabber.setFrameRate(30);
-		}
+		grabber = new FFmpegFrameGrabber(":0.0+" + 0 + "," + 0);
+		grabber.setBitsPerPixel(8);
+		grabber.setImageWidth(rect.width);
+		grabber.setImageHeight(rect.height);
+		grabber.setFormat("x11grab");
+		grabber.setFrameRate(30);
+
 	}
 
 	public void stopStream(){
@@ -81,11 +68,6 @@ public class SendFrames implements Runnable{
 				count=0;
 				start=System.currentTimeMillis();
 			}
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 		try {
 			grabber.stop();
@@ -93,4 +75,5 @@ public class SendFrames implements Runnable{
 			e.printStackTrace();
 		}
 	}
+
 }
