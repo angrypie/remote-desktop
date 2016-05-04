@@ -7,7 +7,6 @@ import Display from './Display'
 
 
 
-
 class Root extends Component {
 	render() {
 		return (

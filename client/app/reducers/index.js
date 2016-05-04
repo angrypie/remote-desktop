@@ -36,7 +36,7 @@ function hosts(state = initialState.hosts, action) {
 			if(state.current.conn != null) state.current.conn.close()
 			return {...state, current: action.host }
 		case types.NEW_FRAME:
-			return {...state, current: {frame: action.frame} }
+			return {...state, current: {...state.current, frame: action.frame} }
 		default:
 			return state
 	}

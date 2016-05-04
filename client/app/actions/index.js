@@ -71,3 +71,9 @@ export function setUser(name) {
 		name: name
 	}
 }
+
+export function mouseClick(host, type, position) {
+	host.current.conn.send(JSON.stringify({
+		action: type, data: position
+	}))
+}
