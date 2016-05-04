@@ -32,7 +32,7 @@ func getOnClose() wserver.OnCloseFunc {
 
 		//if client closed
 		if ok {
-			log.Println("\n\nflag--------flag----------flag----------1\n\n")
+			//log.Println("\n\nflag--------flag----------flag----------1\n\n")
 			chRelay.Delete(conn)
 			host.Active = false
 			host.Conn.SendJson(&Action{"CLIENT_CLOSE", ""})
