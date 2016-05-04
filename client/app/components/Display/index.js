@@ -10,32 +10,34 @@ class Display extends Component {
 	}
 
 	componentDidMount() {
-    let visual = ReactDOM.findDOMNode(this.refs.visual)
-    visual.onclick = (event) => {
+		let { host } = this.props
+		if (host.conn == null) return
+		let visual = ReactDOM.findDOMNode(this.refs.visual)
+		visual.onclick = (event) => {
 			let { host } = this.props
-    	console.log(host)
-    	event.preventDefault()
-			host.conn.send(JSON.stringify({
-				action: "MOUSE_LCLICK", data: this.state.position
-			}))
-			host.conn.send(JSON.stringify({
-				action: "MOUSE_LRELEASE", data: this.state.position
-			}))
-    }
-    visual.onmousemove = (event) => {
+			console.log(host)
+			event.preventDefault()
+				host.conn.send(JSON.stringify({
+					action: "MOUSE_LCLICK", data: this.state.position
+				}))
+				host.conn.send(JSON.stringify({
+					action: "MOUSE_LRELEASE", data: this.state.position
+				}))
+		}
+		visual.onmousemove = (event) => {
 			let { host } = this.props
-    	let {top, left} = visual.getBoundingClientRect()
-    	let {clientX: x, clientY: y} = event
-    	this.setState({
-    		position: {
-	    		x: x - left,
-	    		y: y - top
-	    	}
-    	})
-			host.conn.send(JSON.stringify({
-				action: "MOUSE_MOVE", data: this.state.position
-			}))
-    }
+			let {top, left} = visual.getBoundingClientRect()
+			let {clientX: x, clientY: y} = event
+			this.setState({
+				position: {
+					x: x - left,
+					y: y - top
+				}
+			})
+				host.conn.send(JSON.stringify({
+					action: "MOUSE_MOVE", data: this.state.position
+				}))
+		}
 	}
 
 	getFrame() {
