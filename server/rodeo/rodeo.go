@@ -34,6 +34,7 @@ func getOnClose() wserver.OnCloseFunc {
 		if ok {
 			chRelay.Delete(conn)
 			host.Active = false
+			host.Conn.SetOnmessage(newMessage)
 			host.Conn.SendJson(&Action{"CLIENT_CLOSE", ""})
 			return
 		}

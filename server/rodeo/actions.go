@@ -2,7 +2,7 @@ package rodeo
 
 import (
 	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
-	//"log"
+	"log"
 )
 
 /*
@@ -44,7 +44,10 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 		return
 	}
 	host.Lock()
-	defer host.Unlock()
+	defer func() {
+		host.Unlock()
+		log.Println("-----------UNLOCK")
+	}()
 
 	if host.Active {
 		client.SendJson(&Action{"SELECT_FAIL", "host busy"})
@@ -53,7 +56,9 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 	host.Active = true
 
 	host.Conn.SendJson(&Action{"CLIENT_CONNECT", ""})
+	log.Println("-----------LOCKED1")
 	host.Wait()
+	log.Println("-----------LOCKED2")
 	if host.Active == false {
 		client.SendJson(&Action{"SELECT_FAIL", "denied"})
 		return
@@ -67,6 +72,7 @@ func actSelectHost(data *interface{}, client *wserver.Client) {
 }
 
 func actClientAccess(data *interface{}, client *wserver.Client) {
+	log.Println("ACEESS")
 	host, _ := hostConnections.GetByConn(client)
 	host.Active = true
 	host.Signal()
