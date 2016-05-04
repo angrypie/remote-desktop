@@ -3,7 +3,17 @@ package coders;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.websocket.Session;
 import coders.Message;
 
@@ -119,9 +129,9 @@ public class Controller {
 	}
 
 	private void mouseMove(Message message){
-		JsonObject json=dec.getJson((String)message.getData());
-		int x=Integer.valueOf(json.getString("x"));
-		int y=Integer.valueOf(json.getString("y"));
+		JsonObject obj = (JsonObject)message.getData();
+		int x=obj.getInt("x");
+		int y=obj.getInt("y");
 		robot.mouseMove(x, y);
 	}
 
