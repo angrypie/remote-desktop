@@ -9,10 +9,11 @@ import Display from './Display'
 
 class Root extends Component {
 	render() {
+		let {hosts, server, user} = this.props
 		return (
 			<div className={style.root}>
-				<Controll hosts={this.props.hosts} server={this.props.server.addr} />
-				<Display host={this.props.hosts.current} />
+				<Controll hosts={hosts} server={server.addr} />
+				<Display host={hosts.current} />
 			</div>
 			)
 	}

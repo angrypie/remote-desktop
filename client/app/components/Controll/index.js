@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { setUser, getHosts, selectHost } from 'actions'
 import SelectHosts from './SelectHosts'
 import ControllStatus from './ControllStatus'
+import Settings from './Settings'
 import style from './Controll.css'
 
 
@@ -39,6 +40,7 @@ class Controll extends Component {
 		
 		return (
 			<div className={style.controll} >
+				<Settings />
 				<div className={style.connectWrapper}>
 					<div className={`btn ${style.connectBtn}`} onClick={this.selectHost.bind(this)}>Connect</div>
 					<ControllStatus current={hosts.current} />

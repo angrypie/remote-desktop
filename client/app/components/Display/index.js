@@ -12,7 +12,6 @@ class Display extends Component {
 	componentDidMount() {
 		let desktop = ReactDOM.findDOMNode(this.refs.desktop)
 		if(desktop == null) return
-		console.log(desktop)
 		desktop.onmousedown = (event) => {
 			let { host } = this.props
 			if (host.conn == null) return
@@ -36,8 +35,6 @@ class Display extends Component {
 			let {top, left} = desktop.getBoundingClientRect()
 			let {clientX: x, clientY: y} = event
 			let {width, height, naturalWidth, naturalHeight} = desktop
-			console.log(width, height)
-			console.log(naturalWidth, naturalHeight)
 
 			this.setState({
 				position: {
@@ -66,7 +63,7 @@ class Display extends Component {
 		return (
 			<div onmouseMove={() => this.mousemove()} className={style.display}>
 				<div className={style.visual} ref="visual">
-					<img src={"data:image/png;base64," + host.frame} ref="desktop" />
+					<img style={ host.streaming ? {} : {display: "none"}} src={"data:image/png;base64," + host.frame} ref="desktop" />
 				</div>
 			</div>
 		)

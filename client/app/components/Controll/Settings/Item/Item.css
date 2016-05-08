@@ -1,0 +1,72 @@
+@import 'colors.css';
+
+.item {
+	text-transform: none;
+	font-weight: normal;
+	display: flex;
+	justify-content: space-between;
+	height: 1.5rem;
+}
+
+.name {
+	height: 1.5rem;
+	line-height: 1.5rem;
+}
+
+
+.option {
+	text-transform: none;
+	font-weight: normal;
+	height: 1.5rem;
+	line-height: 1.5rem;
+	padding: 0rem 1rem;
+	background-color:transparent;
+	transition: background .2s ease-in-out,
+		opacity .2s ease-in-out;
+}
+
+.options {
+	background: var(--light);
+	overflow: hidden;
+}
+
+.options:hover {
+	z-index: 10;
+	overflow: visible;
+}
+
+.options .option {
+	opacity: 0;
+}
+
+.option:first-child  {
+	opacity: 1;
+}
+
+
+.options:hover .option {
+	background-color: var(--dark);
+	opacity: 1;
+}
+
+.options:hover .option:hover {
+	background-color: var(--accent);
+}
+
+.unactive {
+	cursor: pointer;
+}
+
+.unactive:hover {
+}
+
+.unactive * {
+	opacity: 0.4;
+}
+
+.unactive .options:hover {
+	overflow: hidden;
+}
+.unactive .options:hover .option {
+	background-color: var(--light);
+}

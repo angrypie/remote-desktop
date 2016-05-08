@@ -2,7 +2,10 @@ import * as types from '../constants/actions.js'
 
 const initialState = {
 	user: {
-		name: "John Doe"
+		name: 'John Doe',
+		settings: {
+			interface: 'desktop' //'desktop' or 'mobile'
+		}
 	},
 
 	hosts: {
@@ -18,14 +21,16 @@ const initialState = {
 	}
 }
 
+
 function user(state = initialState.user, action) {
 	switch (action.type) {
 		case types.SET_USER:
 			return {...state, name: action.name}
+		case types.SET_INTERFACE:
+			return {...state, settings: {...state.settings, interface: action.interface}}
 		default:
 			return state
 	}
-
 }
 
 function hosts(state = initialState.hosts, action) {
@@ -43,7 +48,10 @@ function hosts(state = initialState.hosts, action) {
 }
 
 function server(state = initialState.server, action) {
-	return state
+	switch (action.type) {
+		default:
+			return state
+	}
 }
 
 const reducers = {

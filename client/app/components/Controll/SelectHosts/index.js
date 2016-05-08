@@ -25,7 +25,7 @@ let SelectHosts  = ({ hosts, hostSelected, selected }) => {
 
 	return (
 		<div className={style.selectHosts}>
-		<div className="label">Avaliable hosts:</div>
+		<div className="label">Avaliable hosts</div>
 			{host_divs}
 		</div>
 	)
