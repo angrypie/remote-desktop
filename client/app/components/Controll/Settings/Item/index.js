@@ -2,10 +2,14 @@ import React from 'react'
 import style from './Item.css'
 
 const defaultConf = {
+	//if active is false, then item is shown but not responsive
 	active: true,
+	/// display item or not
 	visible: true
 }
 
+//Settings item,
+//
 let Item = ({ name, action, options, conf}) => {
 	conf = {...defaultConf, ...conf}
 	return !conf.visible ? null : (

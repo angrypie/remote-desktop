@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import style from './Settings.css'
+import { connect } from 'react-redux'
 import Item from './Item'
+import { setSettings } from 'actions'
 
 
 class Settings extends Component {
@@ -8,8 +10,8 @@ class Settings extends Component {
 		super()
 		this.state = {
 			settings: {
-				interface: ['Desktop', 'Bobile'],
-				connection: ['Relay', 'P2P']
+				interface: ['desktop', 'mobile'],
+				connection: ['relay', 'P2P']
 			}
 		}
 	}
@@ -19,7 +21,9 @@ class Settings extends Component {
 	}
 	
 	interfaceAction(chosen) {
+		let { dispatch } = this.props
 		this.choseSettingOption('interface', chosen)
+		dispatch(setSettings({interface: this.state.settings.interface[0]}))
 	}
 
 	choseSettingOption(property, option) {
@@ -53,5 +57,7 @@ class Settings extends Component {
 		)
 	}
 }
+
+Settings = connect()(Settings)
 
 export default Settings

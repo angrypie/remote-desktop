@@ -77,3 +77,10 @@ export function mouseClick(host, type, position) {
 		action: type, data: position
 	}))
 }
+
+export function setSettings(settings) {
+	return {
+		type: types.SET_SETTINGS,
+		settings: settings
+	}
+}

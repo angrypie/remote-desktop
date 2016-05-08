@@ -17,6 +17,7 @@
 .option {
 	text-transform: none;
 	font-weight: normal;
+	text-transform: capitalize;
 	height: 1.5rem;
 	line-height: 1.5rem;
 	padding: 0rem 1rem;
@@ -55,9 +56,6 @@
 
 .unactive {
 	cursor: pointer;
-}
-
-.unactive:hover {
 }
 
 .unactive * {
