@@ -13,7 +13,7 @@ class Root extends Component {
 		return (
 			<div className={style.root}>
 				<Controll hosts={hosts} server={server.addr} />
-				<Display host={hosts.current} />
+				<Display host={hosts.current} settings={user.settings} />
 			</div>
 			)
 	}
@@ -28,3 +28,4 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(Root)
+

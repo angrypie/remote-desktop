@@ -1,0 +1,34 @@
+@import 'colors.css';
+
+.box {
+	height: 1.8rem;
+	background: var(--white);
+	/* transition: max-height .7s ease-in-out; */
+	overflow: hidden;
+}
+
+.title {
+	display: flex;
+	justify-content: space-between;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: 0.1rem;
+	word-spacing: 0.1rem;
+	font-size: 0.8rem;
+	padding: 0.5rem 0.7rem;
+	color: var(--black);
+	cursor: pointer;
+	user-select: none;
+}
+
+.unctive {
+}
+
+.active {
+	height: auto;
+}
+
+.indicator {
+	font-size: 1rem;
+}
+

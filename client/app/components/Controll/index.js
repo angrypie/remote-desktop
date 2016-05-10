@@ -4,6 +4,7 @@ import { setUser, getHosts, selectHost } from 'actions'
 import SelectHosts from './SelectHosts'
 import ControllStatus from './ControllStatus'
 import Settings from './Settings'
+import Box from './Box'
 import style from './Controll.css'
 
 
@@ -40,14 +41,18 @@ class Controll extends Component {
 		
 		return (
 			<div className={style.controll} >
-				<Settings />
+				<Box title="settings">
+					<Settings />
+				</Box>
 				<div className={style.connectWrapper}>
 					<div className={`btn ${style.connectBtn}`} onClick={this.selectHost.bind(this)}>Connect</div>
 					<ControllStatus current={hosts.current} />
 				</div>
-				<SelectHosts hosts={hosts} 
-					hostSelected={(name) => this.setState({selectedHost: name})}
-					selected={this.state.selectedHost}/>
+				<Box title="avaliable hosts" active={true}>
+					<SelectHosts hosts={hosts} 
+						hostSelected={(name) => this.setState({selectedHost: name})}
+						selected={this.state.selectedHost}/>
+				</Box>
 			</div>
 		)
 	}

@@ -27,7 +27,7 @@ function user(state = initialState.user, action) {
 		case types.SET_USER:
 			return {...state, name: action.name}
 		case types.SET_SETTINGS:
-			return {...state, settings: {...state.settings, ...settings}}
+			return {...state, settings: {...state.settings, ...action.settings}}
 		default:
 			return state
 	}

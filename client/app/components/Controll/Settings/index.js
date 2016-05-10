@@ -22,13 +22,14 @@ class Settings extends Component {
 	
 	interfaceAction(chosen) {
 		let { dispatch } = this.props
+		let option = this.state.settings.interface[chosen]
 		this.choseSettingOption('interface', chosen)
-		dispatch(setSettings({interface: this.state.settings.interface[0]}))
+		dispatch(setSettings({interface: option}))
 	}
 
 	choseSettingOption(property, option) {
 		let arr = this.state.settings[property].concat()
-		let elm = arr.splice(option, 1)
+		let elm = arr.splice(option, 1)[0]
 		arr.unshift(elm)
 		this.setState({settings:{
 			...this.state.settings,
@@ -40,7 +41,6 @@ class Settings extends Component {
 	render() {
 		return (
 				<div className={style.settings}>
-					<div className={`label ${style.label}`}>Settings</div>
 					<Item
 						action={this.interfaceAction.bind(this)}
 						name='Interface type'
