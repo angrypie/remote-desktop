@@ -22,6 +22,7 @@ public class EventSocketClient
 	public void onWebSocketConnect(Session sess)
 	{
 		sess.setMaxTextMessageBufferSize(1000*2024);
+		sess.setMaxIdleTimeout(Long.MAX_VALUE);
 		System.out.println("Socket Connected: " + sess);
 		if(contr==null)contr=new Controller();
 		contr.setSession(sess);
