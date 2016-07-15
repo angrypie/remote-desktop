@@ -1,7 +1,7 @@
 package rodeo
 
 import (
-	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
+	"github.com/angrypie/remote-desktop/go_server/rodeo/wserver"
 	"log"
 )
 

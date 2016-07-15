@@ -1,7 +1,7 @@
 package rodeo
 
 import (
-	"github.com/angrypie/remote-desktop/server/rodeo/wserver"
+	"github.com/angrypie/remote-desktop/go_server/rodeo/wserver"
 	"io"
 	"log"
 )
@@ -25,6 +25,7 @@ func (r *Relay) GetClient(conn *wserver.Client) (host *wserver.Client, ok bool) 
 		if conn == host.Conn {
 			return client, true
 		}
+
 	}
 	return nil, false
 }
