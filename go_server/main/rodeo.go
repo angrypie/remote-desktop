@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/angrypie/remote-desktop/server/rodeo"
+	"github.com/angrypie/remote-desktop/go_server/rodeo"
 	"log"
 )
 

@@ -88,7 +88,8 @@ function getEntry() {
 function getPlugins() {
 	var base = [
 			new webpack.DefinePlugin({
-				NODE_ENV: JSON.stringify(NODE_ENV)
+				NODE_ENV: JSON.stringify(NODE_ENV),
+				RELAY_SERVER_ADDRESS: JSON.stringify(process.env.RELAY_SERVER_ADDRESS),
 			}),
 			new webpack.optimize.OccurenceOrderPlugin(),
 	]

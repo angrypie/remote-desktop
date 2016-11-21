@@ -4,3 +4,5 @@ bin
 
 src/simpleUI
 src/server
+
+**/*.class

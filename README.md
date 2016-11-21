@@ -1,4 +1,37 @@
 # remote-desktop
+## Install
+### Client
+
+Requierd: nodejs`, `npm` 
+Production build:
+
+	cd remote-desktop/client
+	npm install -g webpack
+	npm install
+	RELAY_SERVER_ADDRESS=<your_server_address>:9595 NODE_ENV=PRODUCTION webpack
+
+Run server in dist directory
+
+### Server
+
+Requierd: golang` 
+
+	cd remote-desktop/go_server
+	go get -v
+	go build rodeo.go
+	./main
+
+### Host
+
+Requierd: `jdk`, `jre` 
+
+	cd host
+	mkdir bin
+	javac -cp `find lib -name "*.jar" -exec printf :{} ';'` -sourcepath src src/client/MainWindow.java -d bin
+	java -cp `find lib -name "*.jar" -exec printf :{} ';'`:bin client.MainWindow
+
+NOTE: ipServer should be specified without port 9595
+
 ## Naming
 * host - устройство к которому осуществляется доступ
 * client - устройство с которого производится доступ к хосту

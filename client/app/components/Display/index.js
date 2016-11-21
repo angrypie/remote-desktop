@@ -119,7 +119,7 @@ class Display extends Component {
 	render() {
 		let { host, settings } = this.props
 		return (
-			<div onmouseMove={() => this.mousemove()} className={style.display}>
+			<div onMouseMove={() => this.mousemove()} className={style.display}>
 				<div className={style.visual} ref="visual">
 					<img
 						style={ host.streaming ? {} : {display: "none"}}

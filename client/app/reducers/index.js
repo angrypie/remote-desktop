@@ -16,8 +16,9 @@ const initialState = {
 			login: null,  // string
 		}
 	},
+
 	server: {
-		addr: NODE_ENV == 'DEVELOP' ? '192.168.0.104:9595' : '46.149.80.62:9595',
+		addr: RELAY_SERVER_ADDRESS,
 	}
 }
 
