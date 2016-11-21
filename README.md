@@ -2,7 +2,7 @@
 ## Install
 ### Client
 
-Requierd: nodejs`, `npm` 
+Requierd: `nodejs`, `npm` 
 Production build:
 
 	cd remote-desktop/client
@@ -14,7 +14,7 @@ Run server in dist directory
 
 ### Server
 
-Requierd: golang` 
+Requierd: `golang` 
 
 	cd remote-desktop/go_server
 	go get -v
